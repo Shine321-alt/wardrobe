@@ -1,0 +1,156 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 56px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+/* Logo */
+.header-logo {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-family: monospace;
+  color: #ef4444;
+  justify-self: start;
+}
+
+.header-logo span {
+  color: #ef4444;
+}
+
+/* Nav */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-self: center;
+}
+
+.nav-link {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #1f2937;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #ef4444;
+}
+
+.nav-link--active {
+  color: #ef4444;
+  border-bottom: 2px solid #ef4444;
+  padding-bottom: 2px;
+}
+
+/* Search + Icons */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-self: end;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.search-input {
+  padding: 6px 16px 6px 30px;
+  font-size: 0.75rem;
+  background-color: #f3f4f6;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  outline: none;
+  width: 144px;
+  transition: width 0.3s;
+}
+
+.search-input:focus {
+  width: 192px;
+  border-color: #d1d5db;
+  background-color: #ffffff;
+}
+
+.icon-btn {
+  padding: 6px;
+  color: #374151;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #ef4444;
+}
+
+/* Mobile Toggle */
+.mobile-toggle {
+  display: none;
+  padding: 8px;
+  color: #374151;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  background-color: #ffffff;
+  border-top: 1px solid #f3f4f6;
+  padding: 1rem 1.5rem;
+  flex-direction: column;
+  gap: 1rem;
+  display: none;
+}
+
+.mobile-link {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #1f2937;
+}
+
+.mobile-link:hover {
+  color: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .header-actions {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: block;
+    justify-self: end;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+}
