@@ -1,0 +1,29 @@
+/* ProductTitle.css */
+.Title {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 1rem 0;
+}
+
+.Title h1 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #000000;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.Title p:nth-child(2) {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.Title p:nth-child(3) {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #000000;
+}

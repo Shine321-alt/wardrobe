@@ -5,7 +5,6 @@
   height: clamp(320px, 55vw, 600px);
 }
 
-/* Slides */
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -23,14 +22,12 @@
   object-fit: cover;
 }
 
-/* Dark Overlay */
 .hero-overlay {
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Text */
 .hero-text {
   position: absolute;
   inset: 0;
@@ -43,17 +40,17 @@
 }
 
 .hero-title {
+  font-family: 'Righteous', sans-serif;
   font-size: clamp(2.5rem, 8vw, 7rem);
-  font-weight: 900;
-  font-family: monospace;
   text-transform: uppercase;
   line-height: 1;
-  color: #FF2D2D;
+  letter-spacing: -0.15em;
+  color: #FF2D2D;           /* WARDROBE สีแดง */
   text-shadow: 0 0 40px rgba(255, 45, 45, 0.4);
 }
 
 .hero-title span {
-  color: #FF6B35;
+  color: #ffffff;           /* + สีขาว */
 }
 
 .hero-subtitle {
@@ -65,7 +62,6 @@
   margin-top: 0.75rem;
 }
 
-/* Dots */
 .hero-dots {
   position: absolute;
   bottom: 20px;

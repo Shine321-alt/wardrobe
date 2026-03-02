@@ -1,26 +1,44 @@
 import { Globe, Instagram, Twitter, Facebook, Youtube } from 'lucide-react'
+import { Link } from 'react-router-dom' 
 import '../styles/Footer.css'
 
 const footerSections = [
   {
     title: 'RESOURCES',
-    links: ['Size Guide', 'Materials', 'Care Instructions', 'Style Tips', 'Lookbook'],
+    links: [
+      { label: 'Size Guide', to: '/size-guide' },
+      { label: 'Materials', to: '/materials' },
+      { label: 'Care Instructions', to: '/care' },
+      { label: 'Style Tips', to: '/style-tips' },
+      { label: 'Lookbook', to: '/lookbook' },
+    ],
   },
   {
     title: 'HELP',
-    links: ['FAQ', 'Shipping & Returns', 'Track Your Order', 'Contact Us'],
+    links: [
+      { label: 'FAQ', to: '/faq' },
+      { label: 'Shipping & Returns', to: '/shipping' },
+      { label: 'Track Your Order', to: '/track' },
+      { label: 'Contact Us', to: '/contact' },
+    ],
   },
   {
     title: 'COMPANY',
-    links: ['About Us', 'Careers', 'Press', 'Sustainability', 'Affiliate'],
+    links: [
+      { label: 'About Us', to: '/about' },
+      { label: 'Careers', to: '/careers' },
+      { label: 'Press', to: '/press' },
+      { label: 'Sustainability', to: '/sustainability' },
+      { label: 'Affiliate', to: '/affiliate' },
+    ],
   },
 ]
 
 const socialIcons = [
-  { Icon: Instagram, label: 'Instagram' },
-  { Icon: Twitter, label: 'Twitter' },
-  { Icon: Facebook, label: 'Facebook' },
-  { Icon: Youtube, label: 'YouTube' },
+  { Icon: Instagram, label: 'Instagram', to: 'https://instagram.com' },
+  { Icon: Twitter, label: 'Twitter', to: 'https://twitter.com' },
+  { Icon: Facebook, label: 'Facebook', to: 'https://facebook.com' },
+  { Icon: Youtube, label: 'YouTube', to: 'https://youtube.com' },
 ]
 
 export default function Footer() {
@@ -28,33 +46,28 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
 
-        {/* Top */}
         <div className="footer-top">
-
-          {/* Columns */}
           <div className="footer-columns">
 
-            {/* RESOURCES, HELP, COMPANY */}
             {footerSections.map(({ title, links }) => (
               <div key={title} className="footer-col">
                 <h4 className="footer-col-title">{title}</h4>
                 <ul>
-                  {links.map(link => (
-                    <li key={link}>
-                      <a href="#">{link}</a>
+                  {links.map(({ label, to }) => (
+                    <li key={label}>
+                      <Link to={to}>{label}</Link>   
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
 
-            {/* FOLLOW US */}
             <div className="footer-col">
               <h4 className="footer-col-title">FOLLOW US</h4>
               <div className="footer-social">
-                {socialIcons.map(({ Icon, label }) => (
-                  <a key={label} href="#" aria-label={label}>
-                    <Icon size={16} />
+                {socialIcons.map(({ Icon, label, to }) => (
+                  <a key={label} href={to} target="_blank" rel="noreferrer" aria-label={label}>
+                    <Icon size={16} />   
                   </a>
                 ))}
               </div>
@@ -62,19 +75,16 @@ export default function Footer() {
 
           </div>
 
-          {/* Country */}
           <button className="footer-country">
             <Globe size={13} />
             <span>United States</span>
           </button>
-
         </div>
 
-        {/* Bottom */}
         <div className="footer-bottom">
-          <span className="footer-logo">
+          <Link to="/" className="footer-logo">   
             WARDROBE<span>+</span>
-          </span>
+          </Link>
           <p className="footer-copy">
             © {new Date().getFullYear()} Wardrobe+. All rights reserved.
           </p>

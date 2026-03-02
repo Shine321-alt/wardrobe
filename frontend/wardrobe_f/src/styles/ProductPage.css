@@ -1,0 +1,10 @@
+.product {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  gap: 2rem;
+  align-items: start;        /* ต้องมี */
+  min-height: 100vh;         /* เพิ่ม */
+}

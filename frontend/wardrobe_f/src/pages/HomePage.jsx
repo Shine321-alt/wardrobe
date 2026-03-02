@@ -1,16 +1,15 @@
 import HeroBanner from '../components/HeroBanner'
 import ProductGrid from '../components/ProductGrid'
 import CollectionGrid from '../components/CollectionGrid'
+import '../styles/HomePage.css'
 
 export default function HomePage() {
   return (
-    <div>
+    <div className="homepage">
       <HeroBanner />
       <ProductGrid />
       <CollectionGrid />
-
-      {/* bottom spacing */}
-      <div className="h-8" />
+      <div className="homepage-spacing" />
     </div>
   )
 }

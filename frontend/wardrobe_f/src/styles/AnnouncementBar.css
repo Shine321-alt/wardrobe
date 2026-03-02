@@ -1,0 +1,61 @@
+.Announcement-Bar {
+  background-color: #000000;
+  padding: 8px 1rem;
+  text-align: center;
+}
+
+.Announcement-textsale {
+  position: relative;
+  height: 40px;
+}
+
+/* ซ่อนทุก item */
+.bar-item {
+  display: flex;
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+/* แสดงแค่ active */
+.bar-item--active {
+  opacity: 1;
+  pointer-events: auto;
+  animation: slideUp 0.6s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-50% + 10px));  /* เลื่อนขึ้นมา */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+}
+
+.bar-item p {
+  font-size: 0.75rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.bar-item a {
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.bar-item a:hover {
+  color: #d1d5db;
+}

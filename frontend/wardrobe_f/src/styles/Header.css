@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
 .header {
   position: sticky;
   top: 0;
@@ -19,11 +21,11 @@
 
 /* Logo */
 .header-logo {
-  font-size: 1.4rem;
-  font-weight: 900;
-  font-family: monospace;
+  font-family: 'Righteous', sans-serif;  /* ← Righteous อันเดียว */
+  font-size: 1.6rem;
   color: #ef4444;
   justify-self: start;
+  letter-spacing: -0.15em;
 }
 
 .header-logo span {

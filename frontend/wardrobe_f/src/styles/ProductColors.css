@@ -1,0 +1,43 @@
+.product-color {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-color-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+.product-colors-switch {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-select {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.color-select img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;    /* เปลี่ยนจาก cover → contain */
+  object-position: center;
+  padding: 4px;           /* เพิ่ม padding ให้รูปไม่ชิดขอบ */
+}   
+
+.color-select:hover {
+  border-color: #000000;
+}
+
+.color-select--active {
+  border-color: #000000;
+}

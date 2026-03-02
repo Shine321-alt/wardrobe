@@ -1,0 +1,55 @@
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.product-description {
+  font-size: 0.85rem;
+  color: #4b5563;
+  line-height: 1.8;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 1rem;
+}
+
+.product-description p {
+  font-size: 0.85rem;
+  color: #4b5563;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.product-add-btn {
+  width: 100%;
+  background-color: #000000;     /* ดำตอนยังไม่เลือก */
+  color: #ffffff;
+  padding: 0.875rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: not-allowed;
+  border-radius: 9999px;         /* ขอบกลม */
+  transition: background-color 0.2s;
+}
+
+.product-add-btn:not(:disabled) {
+  background-color: #ef4444;     /* แดงตอนเลือกแล้ว */
+  cursor: pointer;
+}
+
+.product-add-btn:not(:disabled):hover {
+  background-color: #dc2626;
+}
+
+.desc-loading {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './layouts/Layout'
 import HomePage from './pages/HomePage'
+import Productpage from './pages/ProductPage'
 import './styles/ComingSoon.css'
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -19,7 +20,10 @@ export default function App() {
           <Route path="/women" element={<ComingSoon label="Women" />} />
           <Route path="/kid" element={<ComingSoon label="Kid" />} />
           <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
+          <Route path="/sale" element={<ComingSoon label="Sale" />} />
           <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
+          <Route path="/product/:id" element={<Productpage />} />
+          
         </Route>
       </Routes>
     </BrowserRouter>

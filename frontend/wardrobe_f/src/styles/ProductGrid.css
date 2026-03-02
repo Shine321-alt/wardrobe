@@ -95,15 +95,24 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 6px;
-  border-radius: 9999px;
+  background-color: #ffffff;
+  width: 28px;            /* เปลี่ยนจาก padding → width/height */
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;     /* เปลี่ยนจาก 9999px → 50% */
   opacity: 0;
   transition: opacity 0.2s;
+  cursor: pointer;
 }
 
 .product-card:hover .product-wishlist {
   opacity: 1;
+}
+
+.product-wishlist:hover {
+  color: #ef4444;
 }
 
 /* Info */

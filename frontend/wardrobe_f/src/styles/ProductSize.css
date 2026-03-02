@@ -1,0 +1,54 @@
+.product-size-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.product-size-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.product-size-btn {
+  position: relative;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.product-size-btn:hover:not(:disabled) {
+  border-color: #000000;
+}
+
+/* เลือกแล้ว */
+.product-size-btn--active {
+  border-color: #000000;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* หมดแล้ว */
+.product-size-btn--soldout {
+  color: #d1d5db;
+  cursor: not-allowed;
+  background-color: #f9fafb;
+}
+
+/* เส้นขีดทับ */
+.soldout-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #d1d5db;
+  transform: rotate(-15deg);
+}
