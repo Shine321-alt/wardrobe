@@ -1,0 +1,46 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Classic White T-Shirt",
+      "price": 500,
+      "category": "clothing",
+      "description": "Comfortable and versatile white t-shirt",
+      "colors": ["white", "black", "gray"],
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "image": "/images/product1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Blue Denim Jeans",
+      "price": 1200,
+      "category": "clothing",
+      "description": "Classic blue denim jeans",
+      "colors": ["light-blue", "dark-blue"],
+      "sizes": ["28", "30", "32", "34", "36"],
+      "image": "/images/product2.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Summer Dress",
+      "price": 1500,
+      "category": "clothing",
+      "description": "Light and breezy summer dress",
+      "colors": ["red", "blue", "yellow"],
+      "sizes": ["XS", "S", "M", "L"],
+      "image": "/images/product3.jpg"
+    }
+  ],
+  "collections": [
+    {
+      "id": 1,
+      "name": "Summer Collection",
+      "description": "Perfect for warm days"
+    },
+    {
+      "id": 2,
+      "name": "Winter Collection",
+      "description": "Stay warm and cozy"
+    }
+  ]
+}
