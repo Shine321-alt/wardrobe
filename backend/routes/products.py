@@ -1,3 +1,6 @@
+"""
+ไฟล์นี้ใช้สำหรับกำหนด route ที่เกี่ยวกับสินค้า เช่น ดึงข้อมูลสินค้า สร้างสินค้าใหม่ ใน backend (Flask)
+"""
 from flask import Blueprint, jsonify, request
 import json
 import os

@@ -3,6 +3,9 @@ import Layout from './layouts/Layout'
 import HomePage from './pages/HomePage'
 import Productpage from './pages/ProductPage'
 import './styles/ComingSoon.css'
+import LoginPage from './pages/LoginPage'
+import SignUpPage from './pages/SignUpPage'
+
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">
@@ -14,6 +17,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/men" element={<ComingSoon label="Men" />} />
