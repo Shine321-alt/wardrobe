@@ -1,3 +1,4 @@
+// ไฟล์นี้ใช้สำหรับแสดงรายละเอียดสินค้าแต่ละชิ้น โดยดึงข้อมูลจาก API
 import axios from "axios"
 import Announcement_Bar from "../components/Announcement_Bar"
 import ProductGallery from "../components/ProductGallery"
@@ -11,6 +12,7 @@ export default function Productpage(){
     const [product, setProduct] = useState(0);
     const [loading, setLoading] = useState(true);
     const [selectedImages,setSelectedImages] = useState([]);
+    
     useEffect(() => { 
         axios.get(`https://fakestoreapi.com/products/${id}`)
         .then(res => {

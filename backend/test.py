@@ -1,3 +1,6 @@
+"""
+ไฟล์นี้ใช้สำหรับรันเซิร์ฟเวอร์ Flask และกำหนด route หลักของ API
+"""
 from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.products import products_bp
