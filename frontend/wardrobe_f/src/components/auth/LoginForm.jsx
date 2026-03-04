@@ -1,4 +1,3 @@
-// ไฟล์นี้ใช้สำหรับฟอร์มเข้าสู่ระบบของผู้ใช้ มีการตรวจสอบข้อมูลและเตรียมเชื่อมต่อ API
 import { useState } from "react";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -6,7 +5,6 @@ import "../../styles/LoginForm.css";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  
   const [form, setForm] = useState({
     identifier: "",
     password: "",
@@ -22,10 +20,14 @@ export default function LoginForm() {
 
     if (!form.identifier) {
       newErrors.identifier = "Please enter your email or username";
+    } else if (/\s/.test(form.identifier)) {
+      newErrors.identifier = "Email or username must not contain spaces";
     }
 
     if (!form.password) {
       newErrors.password = "Please enter your password";
+    } else if (/\s/.test(form.password)) {
+      newErrors.password = "Password must not contain spaces";
     }
 
     return newErrors;
@@ -42,6 +44,7 @@ export default function LoginForm() {
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
+
       {/* identifier */}
       <div className="form-group">
         <label>Username / Email address</label>
@@ -107,6 +110,7 @@ export default function LoginForm() {
         <img src="https://www.google.com/favicon.ico" alt="Google" width={16} />
         Google
       </button>
+
     </form>
   );
 }

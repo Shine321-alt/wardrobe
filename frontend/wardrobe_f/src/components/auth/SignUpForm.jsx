@@ -20,27 +20,36 @@ export default function SignUpForm() {
   const validate = () => {
     const newErrors = {};
 
+    // Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!form.email) {
       newErrors.email = "Please enter your email";
+    } else if (/\s/.test(form.email)) {
+      newErrors.email = "Email must not contain spaces";
     } else if (!emailRegex.test(form.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
+    // Username
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
     if (!form.username) {
       newErrors.username = "Please enter your username";
+    } else if (/\s/.test(form.username)) {
+      newErrors.username = "Username must not contain spaces";
     } else if (!usernameRegex.test(form.username)) {
-      newErrors.username =
-        "Username must be 3-20 characters, letters, numbers and _ only";
+      newErrors.username = "Username must be 3-20 characters, letters, numbers and _ only";
     }
 
+    // Password
     if (!form.password) {
       newErrors.password = "Please enter your password";
+    } else if (/\s/.test(form.password)) {
+      newErrors.password = "Password must not contain spaces";
     } else if (form.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     }
 
+    // Confirm Password
     if (!form.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (form.password !== form.confirmPassword) {
@@ -61,6 +70,7 @@ export default function SignUpForm() {
 
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
+
       {/* Email */}
       <div className="form-group">
         <label>Email address</label>
@@ -156,6 +166,7 @@ export default function SignUpForm() {
         <img src="https://www.google.com/favicon.ico" alt="Google" width={16} />
         Google
       </button>
+
     </form>
   );
 }

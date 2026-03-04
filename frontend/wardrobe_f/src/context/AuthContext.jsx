@@ -1,33 +1,49 @@
-// ไฟล์นี้ใช้สำหรับสร้าง context เพื่อจัดการข้อมูลผู้ใช้และ token ในระบบ
-import { Children, createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext(null);
 
-export default function AuthProvider({children}){
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // ← รอ restore ก่อน
 
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-
-    const login = (userData, tokenData) => {
-        setUser(userData)
-        setToken(tokenData)
-        localStorage.setItem('token', tokenData)   // เก็บ token ไว้
+  // ตอน App เปิด → เช็ค token ใน cookie
+  useEffect(() => {
+    const restore = async () => {
+      try {
+        const data = await authService.getMe(); // ← เรียก /auth/me
+        setUser(data.user);
+      } catch {
+        setUser(null); // ← ถ้าไม่มี session → logout
+      } finally {
+        setLoading(false);
+      }
     };
+    restore();
+  }, []);
 
-    const logout = () => {
-        setUser(null)
-        setToken(null)
-        localStorage.removeItem('token')           // ลบ token ออก
-    };
-    return(
-         <AuthContext.Provider value={{ user, token, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    )
+  const login = (userData) => {
+    setUser(userData);
+  };
 
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch {}
+    setUser(null);
+  };
+
+  // รอ restore เสร็จก่อน render
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-// hook สำหรับเรียกใช้งาน
 export function useAuth() {
-  return useContext(AuthContext)
+  return useContext(AuthContext);
 }
