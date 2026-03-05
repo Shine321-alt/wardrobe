@@ -1,21 +1,43 @@
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 import '../styles/HeroBanner.css'
-
-const slides = [
-  { id: 1, imageUrl: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1600&q=80' },
-  { id: 2, imageUrl: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1600&q=80' },
-  { id: 3, imageUrl: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&q=80' },
-]
+const API_URL = import.meta.env.VITE_API_URL|| 'http://localhost:5000'
 
 export default function HeroBanner() {
+
+  const [slides, setSlides] = useState([])
   const [current, setCurrent] = useState(0)
 
+  // ดึงข้อมูลจาก backend
   useEffect(() => {
+    axios.get(`${API_URL}/api/products/hero`)
+      .then(res => {
+
+        // แปลงชื่อ field จาก backend
+        const formattedSlides = res.data.map(product => ({
+          id: product.Product_ID,
+          name: product.Product_Name,
+          imageUrl: product.Image_URL
+        }))
+
+        setSlides(formattedSlides)
+
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }, [])
+
+  // auto slide
+  useEffect(() => {
+    if (slides.length === 0) return
+
     const timer = setInterval(() => {
       setCurrent(prev => (prev + 1) % slides.length)
     }, 4000)
+
     return () => clearInterval(timer)
-  }, [])
+  }, [slides])
 
   return (
     <div className="hero">
@@ -26,14 +48,12 @@ export default function HeroBanner() {
           key={slide.id}
           className={`hero-slide ${i === current ? 'hero-slide--active' : ''}`}
         >
-          <img src={slide.imageUrl} alt="hero" />
+          <img src={slide.imageUrl} alt={slide.name} />
         </div>
       ))}
 
-      {/* Overlay */}
       <div className="hero-overlay" />
 
-      {/* Text */}
       <div className="hero-text">
         <h1 className="hero-title">
           WARDROBE<span>+</span>
