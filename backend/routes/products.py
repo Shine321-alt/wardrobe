@@ -12,9 +12,10 @@ load_dotenv()
 products_bp = Blueprint('products', __name__)
 
 DB_CONFIG = {
-    'host': os.getenv('MYSQL_HOST', '192.168.1.176'),
-    'user': os.getenv('MYSQL_USER', 'DataBaseAdmin'),
-    'password': os.getenv('MYSQL_PASSWORD', '123456'),
+    'host': os.getenv('MYSQL_HOST', 'ballast.proxy.rlwy.net'),
+    'port': int(os.getenv('MYSQL_PORT', '58189')),
+    'user': os.getenv('MYSQL_USER', 'root'),
+    'password': os.getenv('MYSQL_PASSWORD', 'WwPUUjhdUgqxIBxwqhDdwSxTYcShwuVR'),
     'database': os.getenv('MYSQL_DB', 'Ecommerce'),
     'cursorclass': DictCursor,
     'charset': 'utf8mb4'
@@ -23,6 +24,7 @@ DB_CONFIG = {
 def get_db_connection():
     return pymysql.connect(
         host=DB_CONFIG['host'],
+        port=DB_CONFIG['port'],
         user=DB_CONFIG['user'],
         password=DB_CONFIG['password'],
         database=DB_CONFIG['database'],
@@ -70,7 +72,7 @@ def create_product():
         INSERT INTO products (Name, )
         VALUES (%s, %s)
         """
-        cur.execute(sql, (data['Name'], data['Category'],data['Description'],))
+        cur.execute(sql, (data['Product_Name'], data['Category'],data['Description'],))
         conn.commit()
         new_id = cur.lastrowid
     conn.close()
@@ -92,7 +94,7 @@ def update_product(product_id):
         SET Name=%s, Category=%s, Description=%s
         WHERE Product_ID=%s
         """
-        cur.execute(sql, (data['Name'], data['Category'], data['Description'], product_id))
+        cur.execute(sql, (data['Product_Name'], data['Category'], data['Description'], product_id))
         conn.commit()
     conn.close()
 
