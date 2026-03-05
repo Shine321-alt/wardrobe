@@ -63,22 +63,101 @@ def get_product(product_id):
 # CREATE product
 # -------------------------
 @products_bp.route('/products', methods=['POST'])
-def create_product():
-    data = request.json
+def add_product():
 
+    data = request.json
     conn = get_db_connection()
+
     with conn.cursor() as cur:
-        sql = """
-        INSERT INTO products (Name, )
-        VALUES (%s, %s)
-        """
-        cur.execute(sql, (data['Product_Name'], data['Category'],data['Description'],))
+
+        # ----------------
+        # 1 เพิ่ม product
+        # ----------------
+        cur.execute("""
+            INSERT INTO products (Product_Name, Category, Description)
+            VALUES (%s,%s,%s)
+        """, (
+            data['product_name'],
+            data['category'],
+            data['description']
+        ))
+
+        product_id = cur.lastrowid
+
+
+        # ----------------
+        # 2 loop variants
+        # ----------------
+        for v in data['variants']:
+
+            # ---------- COLOR ----------
+            cur.execute("""
+                SELECT Color_ID FROM colors
+                WHERE Color_Name = %s
+            """, (v['color'],))
+
+            color = cur.fetchone()
+
+            if color:
+                color_id = color['Color_ID']
+            else:
+                cur.execute("""
+                    INSERT INTO colors (Color_Name)
+                    VALUES (%s)
+                """, (v['color'],))
+                color_id = cur.lastrowid
+
+
+            # ---------- SIZE ----------
+            cur.execute("""
+                SELECT Size_ID FROM sizes
+                WHERE Size_Name = %s
+            """, (v['size'],))
+
+            size = cur.fetchone()
+
+            if size:
+                size_id = size['Size_ID']
+            else:
+                cur.execute("""
+                    INSERT INTO sizes (Size_Name)
+                    VALUES (%s)
+                """, (v['size'],))
+                size_id = cur.lastrowid
+
+
+            # ---------- VARIANT ----------
+            cur.execute("""
+                INSERT INTO product_variants
+                (Product_ID, Color_ID, Size_ID)
+                VALUES (%s,%s,%s)
+            """, (
+                product_id,
+                color_id,
+                size_id
+            ))
+
+            variant_id = cur.lastrowid
+
+
+            # ---------- IMAGE ----------
+            cur.execute("""
+                INSERT INTO product_images
+                (Variant_ID, Image_URL)
+                VALUES (%s,%s)
+            """, (
+                variant_id,
+                v['image']
+            ))
+
         conn.commit()
-        new_id = cur.lastrowid
+
     conn.close()
 
-    data['Product_ID'] = new_id
-    return jsonify(data), 201
+    return jsonify({
+        "message": "Product created",
+        "product_id": product_id
+    })
 
 # -------------------------
 # UPDATE product
@@ -112,3 +191,29 @@ def delete_product(product_id):
     conn.close()
 
     return jsonify({"message": "Product deleted"})
+
+@products_bp.route('/products/hero', methods=['GET'])
+def hero_product():
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT DISTINCT 
+                p.Product_ID,
+                p.Product_Name,
+                p.Category,
+                p.Description,
+                pi.Image_URL
+            FROM products p
+            JOIN product_variants pv 
+                ON p.Product_ID = pv.Product_ID
+            JOIN product_images pi 
+                ON pv.Variant_ID = pi.Variant_ID
+            LIMIT 6
+        """)
+
+        products = cur.fetchall()
+
+    conn.close()
+
+    return jsonify(products)
