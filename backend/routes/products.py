@@ -67,10 +67,10 @@ def create_product():
     conn = get_db_connection()
     with conn.cursor() as cur:
         sql = """
-        INSERT INTO products (Name, Price)
+        INSERT INTO products (Name, )
         VALUES (%s, %s)
         """
-        cur.execute(sql, (data['Name'], data['Price']))
+        cur.execute(sql, (data['Name'], data['Category'],data['Description'],))
         conn.commit()
         new_id = cur.lastrowid
     conn.close()
@@ -89,10 +89,10 @@ def update_product(product_id):
     with conn.cursor() as cur:
         sql = """
         UPDATE products
-        SET Name=%s, Price=%s
+        SET Name=%s, Category=%s, Description=%s
         WHERE Product_ID=%s
         """
-        cur.execute(sql, (data['Name'], data['Price'], product_id))
+        cur.execute(sql, (data['Name'], data['Category'], data['Description'], product_id))
         conn.commit()
     conn.close()
 
