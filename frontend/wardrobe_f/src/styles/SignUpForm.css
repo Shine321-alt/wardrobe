@@ -12,9 +12,9 @@
 }
 
 .form-group label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #374151;
+  color: #6b7280;
 }
 
 .input-wrapper {
@@ -31,12 +31,18 @@
 
 .input-wrapper input {
   width: 100%;
-  padding: 12px 40px;
+  padding: 14px 40px;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: #374151;
   outline: none;
   transition: border-color 0.2s;
+}
+
+.input-wrapper input::placeholder {
+  color: #d1d5db;
+  font-size: 0.8rem;
 }
 
 .input-wrapper input:focus {
