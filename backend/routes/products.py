@@ -63,16 +63,13 @@ def get_product(product_id):
 # CREATE product
 # -------------------------
 @products_bp.route('/products', methods=['POST'])
-def add_product():
+def create_product():
 
     data = request.json
     conn = get_db_connection()
 
     with conn.cursor() as cur:
 
-        # ----------------
-        # 1 เพิ่ม product
-        # ----------------
         cur.execute("""
             INSERT INTO products (Product_Name, Category, Description)
             VALUES (%s,%s,%s)
@@ -84,10 +81,25 @@ def add_product():
 
         product_id = cur.lastrowid
 
+        conn.commit()
 
-        # ----------------
-        # 2 loop variants
-        # ----------------
+    conn.close()
+
+    return jsonify({
+        "message": "product created",
+        "product_id": product_id
+    })
+# -------------------------
+# CREATE variant for product
+# -------------------------
+@products_bp.route('/products/<int:product_id>/variants', methods=['POST'])
+def add_variant(product_id):
+
+    data = request.json
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+
         for v in data['variants']:
 
             # ---------- COLOR ----------
@@ -129,12 +141,14 @@ def add_product():
             # ---------- VARIANT ----------
             cur.execute("""
                 INSERT INTO product_variants
-                (Product_ID, Color_ID, Size_ID)
-                VALUES (%s,%s,%s)
+                (Product_ID, Color_ID, Size_ID, Price, Stock)
+                VALUES (%s,%s,%s,%s,%s)
             """, (
                 product_id,
                 color_id,
-                size_id
+                size_id,
+                v['price'],
+                v['stock']
             ))
 
             variant_id = cur.lastrowid
@@ -155,10 +169,9 @@ def add_product():
     conn.close()
 
     return jsonify({
-        "message": "Product created",
+        "message": "variants added",
         "product_id": product_id
     })
-
 # -------------------------
 # UPDATE product
 # -------------------------
