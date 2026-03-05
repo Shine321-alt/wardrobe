@@ -78,7 +78,7 @@ export default function LoginForm() {
             className="input-eye"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            {!showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {errors.password && <p className="form-error">{errors.password}</p>}
