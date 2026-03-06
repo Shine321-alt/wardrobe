@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Heart } from 'lucide-react'
 import axios from 'axios'                        
 import '../styles/ProductGrid.css'
+const API_URL = import.meta.env.VITE_API_URL|| 'http://localhost:5000'
 
 
 
@@ -12,7 +13,7 @@ export default function ProductGrid() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("https://fakestoreapi.com/products/category/men's clothing")
+    axios.get(`${API_URL}/api/products/arrivals`)
       .then(res => {
         setProducts(res.data)                    
         setLoading(false)
@@ -32,20 +33,20 @@ export default function ProductGrid() {
       <div className="product-grid">
         {products.map(product => (
           <Link
-            to={`/product/${product.id}`}
-            key={product.id}
+            to={`/product/${product.Product_ID}`}
+            key={product.Product_ID}
             className="product-card"
           >
             <div className="product-card-image">
-              <img src={product.image} alt={product.title} />
+              <img src={product.Image_URL} alt={product.Product_Name} />
               <button className="product-wishlist">
                 <Heart size={13} />
               </button>
             </div>
 
             <div className="product-info">
-              <p className="product-name">{product.title}</p>
-              <p className="product-price">${product.price}</p>
+              <p className="product-name">{product.Product_Name}</p>
+              <p className="product-price">${product.Price}</p>
             </div>
           </Link>
         ))}
