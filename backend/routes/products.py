@@ -377,20 +377,65 @@ def hero_product():
     conn = get_db_connection()
 
     with conn.cursor() as cur:
-
         cur.execute("""
-            SELECT DISTINCT
+            SELECT
                 p.Product_ID,
                 p.Product_Name,
                 p.Category,
                 p.Description,
-                pi.Image_URL
+                MIN(pi.Image_URL) AS Image_URL
             FROM products p
             JOIN product_variants pv
                 ON p.Product_ID = pv.Product_ID
             JOIN product_images pi
                 ON pv.Variant_ID = pi.Variant_ID
+            GROUP BY p.Product_ID
             LIMIT 6
+        """)
+
+        products = cur.fetchall()
+
+    conn.close()
+
+    return jsonify(products)
+
+# -------------------------
+# GET product cards (for shop page)
+# -------------------------
+@products_bp.route('/products/arrivals', methods=['GET'])
+def product_cards():
+
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+        cur.execute("""
+        SELECT
+            p.Product_ID,
+            p.Product_Name,
+            img.Image_URL,
+            v.Price
+        FROM products p
+
+        JOIN (
+            SELECT Product_ID, MIN(Price) AS Price
+            FROM product_variants
+            GROUP BY Product_ID
+        ) v
+        ON p.Product_ID = v.Product_ID
+
+        JOIN product_variants pv
+        ON pv.Product_ID = v.Product_ID
+        AND pv.Price = v.Price
+
+        LEFT JOIN (
+            SELECT Variant_ID, MIN(Image_URL) AS Image_URL
+            FROM product_images
+            GROUP BY Variant_ID
+        ) img
+        ON pv.Variant_ID = img.Variant_ID
+
+        ORDER BY p.Product_ID DESC
+        LIMIT 5
         """)
 
         products = cur.fetchall()
