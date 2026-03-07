@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/LoginForm.css";
 
 export default function LoginForm() {
+  
+  const navigate = useNavigate();// ใช้สำหรับเปลี่ยนหน้าไปที่ /dashboard หลังจาก login สำเร็จ
+  
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     identifier: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
+  
+  // ===============================
+  // ใช้ useAuth hook เพื่อ update state ใน AuthContext
+  // ===============================
+  const { login: contextLogin } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,14 +43,32 @@ export default function LoginForm() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validate();
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      console.log(form); // ← เชื่อม API ใน Step ถัดไป
+  // ทำงานเมื่อผู้ใช้กดปุ่ม Login
+const handleSubmit = async (e) => {
+
+  e.preventDefault();
+  const newErrors = validate();// เรียก validate เพื่อตรวจสอบข้อมูลที่ผู้ใช้กรอก
+  setErrors(newErrors);// เก็บ error ที่ได้ลงใน state เพื่อแสดงข้อความ error บนหน้า UI
+
+  if(Object.keys(newErrors).length === 0){// ตรวจสอบว่ามี error หรือไม่
+    try{
+
+      await login(form.identifier, form.password);// ส่ง identifier และ password ไปตรวจสอบกับ login จาก authService
+      
+      // ===============================
+      // Update AuthContext ว่า user ได้ login สำเร็จแล้ว
+      // ===============================
+      // ส่ง identifier (email หรือ username) ไปเก็บใน context
+      contextLogin(form.identifier);
+      
+      navigate("/");// เปลี่ยนหน้าไปที่ /dashboard หลังจาก login สำเร็จ
+
+    }catch (err){
+      console.log(err);// ถ้า login ไม่สำเร็จ จะแสดง error ใน console
     }
-  };
+  }
+};
+    
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
@@ -97,7 +125,7 @@ export default function LoginForm() {
 
       {/* Submit */}
       <button type="submit" className="form-submit">
-        Sign in
+        Login
       </button>
 
       {/* Divider */}
