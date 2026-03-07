@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart } from 'lucide-react'
-import axios from 'axios'                        
+import axios from 'axios'
 import '../../styles/ProductGrid.css'
-const API_URL = import.meta.env.VITE_API_URL|| 'http://localhost:5000'
 
-
-
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export default function ProductGrid() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     axios.get(`${API_URL}/api/products/arrivals`)
       .then(res => {
-        setProducts(res.data)                    
+        setProducts(res.data)
         setLoading(false)
       })
-  }, []);
+  }, [])
 
   if (loading) return <p>Loading...</p>
 
@@ -39,14 +36,6 @@ export default function ProductGrid() {
           >
             <div className="product-card-image">
               <img src={product.Image_URL} alt={product.Product_Name} />
-              <button className="product-wishlist">
-                <Heart size={13} />
-              </button>
-            </div>
-
-            <div className="product-info">
-              <p className="product-name">{product.Product_Name}</p>
-              <p className="product-price">${product.Price}</p>
             </div>
           </Link>
         ))}

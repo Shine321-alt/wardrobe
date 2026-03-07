@@ -4,7 +4,6 @@
   padding: 3rem 1rem 0 1rem;
 }
 
-/* Header */
 .product-header {
   display: flex;
   align-items: center;
@@ -38,17 +37,17 @@
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 0rem;        /* ← ชิดกัน */
 }
 
 /* Card */
 .product-card {
   cursor: pointer;
+  display: block;
 }
 
 .product-card-image {
-  position: relative;
-  background-color: #f3f4f6;
+  background-color: #EEEEEE;
   overflow: hidden;
   aspect-ratio: 3 / 4;
 }
@@ -61,79 +60,7 @@
 }
 
 .product-card:hover .product-card-image img {
-  transform: scale(1.05);
-}
-
-/* Tag */
-.product-tag {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 2px 8px;
-  letter-spacing: 0.05em;
-}
-
-.product-tag--new {
-  background-color: #000000;
-  color: #ffffff;
-}
-
-.product-tag--hot {
-  background-color: #ef4444;
-  color: #ffffff;
-}
-
-.product-tag--limited {
-  background-color: #f97316;
-  color: #ffffff;
-}
-
-/* Wishlist */
-.product-wishlist {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: #ffffff;
-  width: 28px;            /* เปลี่ยนจาก padding → width/height */
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;     /* เปลี่ยนจาก 9999px → 50% */
-  opacity: 0;
-  transition: opacity 0.2s;
-  cursor: pointer;
-}
-
-.product-card:hover .product-wishlist {
-  opacity: 1;
-}
-
-.product-wishlist:hover {
-  color: #ef4444;
-}
-
-/* Info */
-.product-info {
-  margin-top: 8px;
-}
-
-.product-name {
-  font-size: 0.75rem;
-  color: #1f2937;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.product-price {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #000000;
-  margin-top: 2px;
+  transform: scale(1.05);   /* ← animation เดิม */
 }
 
 /* Responsive */
