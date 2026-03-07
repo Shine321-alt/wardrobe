@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import '../styles/CollectionGrid.css'
+import '../../styles/CollectionGrid.css'
 
 const collections = [
   { id: 1, label: 'T-SHIRTS', to: '/category/t-shirts',

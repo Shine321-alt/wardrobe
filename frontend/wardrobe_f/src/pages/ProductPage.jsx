@@ -1,8 +1,9 @@
 // ไฟล์นี้ใช้สำหรับแสดงรายละเอียดสินค้าแต่ละชิ้น โดยดึงข้อมูลจาก API
 import axios from "axios"
-import Announcement_Bar from "../components/Announcement_Bar"
-import ProductGallery from "../components/ProductGallery"
-import ProductInfo from "../components/ProductInfo"
+import Announcement_Bar from '../components/Announcement_Bar'
+import ProductGallery from '../components/Product/ProductGallery'
+import ProductInfo from '../components/Product/ProductInfo'
+
 import '../styles/ProductPage.css'
 import { useState,useEffect } from "react"
 import { useParams } from "react-router-dom"

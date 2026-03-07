@@ -1,4 +1,4 @@
-import '../styles/ProductInfo.css'
+import '../../styles/ProductInfo.css'  
 import ProductTitle from './ProductInfo/ProductTitle';
 import ProductSize from './ProductInfo/ProductSize';
 import ProductColors from './ProductInfo/ProductColors'

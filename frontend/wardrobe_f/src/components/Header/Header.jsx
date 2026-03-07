@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Search, Heart, ShoppingBag, User } from 'lucide-react'
-import '../styles/Header.css'
+import MegaMenu from './MegaMenu'
+import '../../styles/Header.css'
 
 const navLinks = [
-  { label: 'MEN', to: '/men' },
+  { label: 'MEN',   to: '/men' },
   { label: 'WOMEN', to: '/women' },
-  { label: 'KID', to: '/kid' },
-  { label: 'NEW', to: '/new' },
+  { label: 'KID',   to: '/kid' },
+  { label: 'NEW',   to: '/new' },
 ]
 
 export default function Header() {
+  const [activeMenu, setActiveMenu] = useState(null)
   const location = useLocation()
 
   return (
@@ -23,13 +25,21 @@ export default function Header() {
 
         <nav className="header-nav">
           {navLinks.map(({ label, to }) => (
-            <Link
+            <div
               key={label}
-              to={to}
-              className={`nav-link ${location.pathname === to ? 'nav-link--active' : ''}`}
+              className="nav-item"
+              onMouseEnter={() => setActiveMenu(label)}
+              onMouseLeave={() => setActiveMenu(null)}
             >
-              {label}
-            </Link>
+              <Link
+                to={to}
+                className={`nav-link ${location.pathname === to ? 'nav-link--active' : ''} ${activeMenu === label ? 'nav-link--open' : ''}`}
+              >
+                {label}
+              </Link>
+
+              {activeMenu === label && <MegaMenu label={label} />}
+            </div>
           ))}
         </nav>
 
