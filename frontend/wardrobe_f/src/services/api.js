@@ -1,8 +1,37 @@
-// ไฟล์นี้สำหรับเขียนฟังก์ชันเชื่อมต่อ API ของระบบ
-import { useState } from "react";
+// import axios library สำหรับใช้ส่ง HTTP request ไปยัง backend
+import axios from "axios";
 
-export function useAuth() {
-  const [user, setUser] = useState(null);
+/*
+  สร้าง instance ของ axios
+  เพื่อกำหนดค่ากลางที่ทุก API จะใช้ร่วมกัน
+*/
+const api = axios.create({
 
-  return { user, setUser };
-}
+  // baseURL คือ URL หลักของ backend server พร้อม /api prefix
+  // เวลาที่เราเรียก api.post("/login") จริง ๆ จะกลายเป็น
+  // http://localhost:5000/api/login
+  baseURL: "http://localhost:5000/api",
+
+  /*
+    withCredentials: true
+    ใช้สำหรับให้ browser ส่ง cookie ไปพร้อมกับ request
+  */
+  withCredentials: true,
+
+  /*
+    headers เริ่มต้นของ request
+    บอก backend ว่าเราส่งข้อมูลเป็น JSON
+  */
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+
+/*
+  export api instance
+  เพื่อให้ไฟล์อื่นสามารถ import ไปใช้ได้
+
+  เช่น
+  import api from "./api";
+*/
+export default api;

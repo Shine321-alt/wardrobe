@@ -4,12 +4,23 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.products import products_bp
+from routes.auth import auth_bp
 
 app = Flask(__name__)
-CORS(app)
+
+# ===============================
+# ตั้งค่า CORS
+# ===============================
+# ต้องตั้ง credentials=True เพื่อให้ cookie ส่งไปได้
+# และ origins เพื่อ allow frontend ที่ http://localhost:5173
+CORS(app, 
+     origins=["http://localhost:5173"],
+     supports_credentials=True)
 
 # Register blueprints
 app.register_blueprint(products_bp, url_prefix='/api')
+# routes login
+app.register_blueprint(auth_bp, url_prefix="/api")
 
 @app.route('/', methods=['GET'])
 def home():
