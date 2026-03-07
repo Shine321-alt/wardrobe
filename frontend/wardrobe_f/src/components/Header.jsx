@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react'
+import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import '../styles/Header.css'
 
 const navLinks = [
@@ -11,7 +11,6 @@ const navLinks = [
 ]
 
 export default function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
 
   return (
@@ -44,21 +43,7 @@ export default function Header() {
           <button className="icon-btn"><User size={17} /></button>
         </div>
 
-        <button className="mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-
       </div>
-
-      {mobileOpen && (
-        <div className="mobile-menu">
-          {navLinks.map(({ label, to }) => (
-            <Link key={label} to={to} className="mobile-link" onClick={() => setMobileOpen(false)}>
-              {label}
-            </Link>
-          ))}
-        </div>
-      )}
     </header>
   )
 }
