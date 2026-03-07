@@ -1,4 +1,4 @@
-import '../../styles/ProductTitle.css'
+import '../../../styles/ProductTitle.css'
 
 
 export default function ProductTitle({ product }){

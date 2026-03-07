@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import '../../styles/ProductSize.css'
+import '../../../styles/ProductSize.css'
 
 const stockData = {
   1: { S: true, M: true, L: false, XL: true },

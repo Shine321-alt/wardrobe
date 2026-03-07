@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import '../styles/ProductGallery.css'
+import '../../styles/ProductGallery.css'
 
 export default function ProductGallery({product , images}){
     const [current, setCurrent] = useState(0);

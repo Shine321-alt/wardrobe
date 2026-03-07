@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart } from 'lucide-react'
 import axios from 'axios'                        
-import '../styles/ProductGrid.css'
+import '../../styles/ProductGrid.css'
 const API_URL = import.meta.env.VITE_API_URL|| 'http://localhost:5000'
 
 

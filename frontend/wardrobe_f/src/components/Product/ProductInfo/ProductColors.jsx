@@ -1,4 +1,4 @@
-import '../../styles/ProductColors.css'
+import '../../../styles/ProductColors.css'
 import { useState, useEffect } from 'react'
 
 export default function ProductColors({ product, onColorChange }){
