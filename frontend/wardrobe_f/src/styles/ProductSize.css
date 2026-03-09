@@ -11,6 +11,7 @@
   gap: 8px;
 }
 
+/* ปุ่มพื้นฐาน */
 .product-size-btn {
   position: relative;
   padding: 12px;
@@ -20,35 +21,43 @@
   font-weight: 600;
   cursor: pointer;
   background: #ffffff;
-  transition: all 0.2s;
+  transition: border 0.2s ease, background 0.2s ease, color 0.2s ease;
   overflow: hidden;
 }
 
+/* hover เฉพาะปุ่มที่กดได้ */
 .product-size-btn:hover:not(:disabled) {
   border-color: #000000;
 }
 
-/* เลือกแล้ว */
+/* ปุ่มที่เลือก */
 .product-size-btn--active {
   border-color: #000000;
   background-color: #000000;
   color: #ffffff;
 }
 
-/* หมดแล้ว */
-.product-size-btn--soldout {
+/* ปุ่มที่หมด stock */
+.product-size-btn:disabled {
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
   color: #d1d5db;
   cursor: not-allowed;
-  background-color: #f9fafb;
 }
 
-/* เส้นขีดทับ */
+/* sold out container */
+.product-size-btn--soldout {
+  position: relative;
+}
+
+/* เส้นขีด sold out */
 .soldout-line {
   position: absolute;
   top: 50%;
-  left: 0;
-  width: 100%;
+  left: 10%;
+  width: 80%;
   height: 1px;
   background-color: #d1d5db;
   transform: rotate(-15deg);
+  pointer-events: none;
 }

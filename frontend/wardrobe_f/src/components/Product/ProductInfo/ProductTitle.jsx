@@ -6,9 +6,9 @@ export default function ProductTitle({ product }){
 
     return(
         <div className="Title">
-            <h1>{product.title}</h1>
-            <p>{product.category}</p>
-            <p>${product.price}</p>
+            <h1>{product.Product_Name}</h1>
+            <p>{product.Category}</p>
+            <p>${product.Price.toFixed(2)}</p>
         </div>
     )
 }
