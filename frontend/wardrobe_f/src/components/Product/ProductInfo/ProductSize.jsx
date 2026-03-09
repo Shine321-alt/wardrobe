@@ -1,43 +1,42 @@
 import { useState, useEffect } from "react";
 import '../../../styles/ProductSize.css'
 
-const stockData = {
-  1: { S: true, M: true, L: false, XL: true },
-  2: { S: false, M: true, L: true, XL: true },
-  3: { S: true, M: false, L: true, XL: true },
-  3: { S: true, M: false, L: true, XL: false },
-}
+export default function ProductSize({ product, onIndexChange, Index }) {
 
+    const [selected, setSelected] = useState("");
 
-export default function ProductSize({product, onSizeChange}){
-    const [selected, setSelected ] = useState(null);
+    useEffect(() => {
+        if(product[Index]){
+            setSelected(product[Index].Size_Name);
+        }
+    }, [Index, product]);
 
-    const sizes = ['S','M','L','XL'];
-    const stock = stockData[product?.id] || {S: true,M: true,L: true,XL: true}
+    const handleSelect = (index) => {
 
-    const handleSelect = (size) => {
-        if (!stock[size]) return 
-        setSelected(size)
-        onSizeChange(size)       
+        if(product[index].Stock === 0) return;
+
+        setSelected(product[index].Size_Name);    
+        onIndexChange(index);
     }
+
     return(
         <div className="product-size">
             <p className="product-size-label">Select Size</p>
-            <div className="product-size-grid">
-                {sizes.map(size => (
-                    <button
-                        key = {size}
-                        className={`product-size-btn
-                            ${selected === size ? 'product-size-btn--active' : ''}
-                            ${!stock[size] ? 'product-size-btn--soldout' : ''}
-                        `}   
-                        onClick={() => handleSelect(size)}
-                        disabled={!stock[size]}
-                    >
-                    {size}
-                    {!stock[size] && <span className="soldout-line" />}
-                    </button>
 
+            <div className="product-size-grid">
+                {product.map((item, index) => (
+                    <button
+                        key={`${item.Size_Name}-${index}`}
+                        disabled={item.Stock === 0}
+                        className={`product-size-btn
+                            ${selected === item.Size_Name ? 'product-size-btn--active' : ''}
+                            ${item.Stock === 0 ? 'product-size-btn--soldout' : ''}
+                        `}
+                        onClick={() => handleSelect(index)}
+                    >
+                        {item.Size_Name}
+                        {item.Stock === 0 && <span className="soldout-line" />}
+                    </button>
                 ))}
             </div>
 

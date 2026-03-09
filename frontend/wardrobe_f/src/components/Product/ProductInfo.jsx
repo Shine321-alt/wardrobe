@@ -7,24 +7,22 @@ import { useState,useEffect } from 'react';
 
 
 
-export default function ProductInfo({ product, onColorChange  }){
-    const [selectedSize,setSelectedSize] = useState(null);
+export default function ProductInfo({ product, selectedIndex, onSelectedIndexChange })  {
 
   
     return(
         <div className='product-info'>
-            <ProductTitle product={product}/>
+            <ProductTitle product={product[selectedIndex]}/>
               {/* description */}
-            <ProductColors product={product} onColorChange={onColorChange}/>
-            <ProductSize product={product} onSizeChange={setSelectedSize}/>
+            <ProductSize product={product} onIndexChange={onSelectedIndexChange} Index={selectedIndex}/>
 
             {/* Add to Cart */}
-            <button className={`product-add-btn ${!selectedSize ? 'product-add-btn--disabled' : ''}`} disabled={!selectedSize} >
-              {selectedSize ? `Add to Cart — Size ${selectedSize}` :`Select a Size`}
+            <button className={`product-add-btn ${selectedIndex === null? 'product-add-btn--disabled' : ''}`} disabled={selectedIndex === null} >
+              {selectedIndex !== null? `Add to Cart — Size ${product[selectedIndex].Size_Name}` :`Select a Size`}
             </button>
 
             <div className="product-description">
-              <p>{product.description}</p>
+              <p>{product[selectedIndex].Description}</p>
             </div>
         </div>
     )

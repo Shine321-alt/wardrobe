@@ -7,18 +7,28 @@ import ProductInfo from '../components/Product/ProductInfo'
 import '../styles/ProductPage.css'
 import { useState,useEffect } from "react"
 import { useParams } from "react-router-dom"
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
 export default function Productpage(){
     const { id } = useParams();
-    const [product, setProduct] = useState(0);
+    const [product, setProduct] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedImages,setSelectedImages] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const onSelectedIndexChange = (idx) => {
+        setSelectedIndex(idx);
+    }
     
     useEffect(() => { 
-        axios.get(`https://fakestoreapi.com/products/${id}`)
+        axios.get(`${API_URL}/api/products/details/${id}`)
         .then(res => {
             setProduct(res.data)
-            setSelectedImages([res.data.image])
+            const firstAvailableIndex = res.data.findIndex(item => item.Stock > 0)
+            if(firstAvailableIndex !== -1){
+                setSelectedIndex(firstAvailableIndex)
+            }else{
+                setSelectedIndex(null)
+            }
             setLoading(false)
         })
     },[id]);
@@ -28,9 +38,8 @@ export default function Productpage(){
         <div>
             <Announcement_Bar/>
             <div className="product">
-                <ProductGallery product={product} images = {selectedImages} />
-                <ProductInfo product={product} onColorChange = {setSelectedImages}/>
-                
+                <ProductGallery product={product}/>
+                <ProductInfo product={product} selectedIndex={selectedIndex} onSelectedIndexChange={onSelectedIndexChange}/>
             </div>
         </div>
     )
