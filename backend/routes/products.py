@@ -96,16 +96,17 @@ def get_product_colors(product_id):
 
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT DISTINCT
+            SELECT
                 c.Color_ID,
                 c.Color_Name,
-                pi.Image_URL
+                MIN(pi.Image_URL) AS Image_URL
             FROM product_variants pv
             JOIN colors c
                 ON pv.Color_ID = c.Color_ID
             JOIN product_images pi
                 ON pv.Variant_ID = pi.Variant_ID
             WHERE pv.Product_ID = %s
+            GROUP BY c.Color_ID, c.Color_Name
         """, (product_id,))
 
         colors = cur.fetchall()
