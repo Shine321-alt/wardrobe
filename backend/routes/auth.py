@@ -57,7 +57,7 @@ def login():
     # ===============================
     # สร้าง JWT token
     # ===============================
-    token = generate_token(user["id"])
+    token = generate_token(user["User_ID"])
 
 
     # ===============================
@@ -66,8 +66,8 @@ def login():
     response = make_response(jsonify({
         "message": "Login successful",
         "user": {
-            "id": user["id"],
-            "email": user["email"]
+            "id": user["User_ID"],  
+            "email": user["Email"]   
         }
     }))
 

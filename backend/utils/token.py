@@ -10,7 +10,7 @@ def generate_token(user_id):
     # payload ที่จะใส่ใน token
     payload = {
         "user_id": user_id,
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        "exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)
     }
 
     # สร้าง JWT token

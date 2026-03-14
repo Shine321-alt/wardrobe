@@ -3,6 +3,8 @@
 """
 import json
 import os
+import pymysql
+from mysql.connector import connect, Error
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), '../data/products.json')
 
@@ -43,5 +45,13 @@ DB_CONFIG = {
 }
 
 def get_db_connection():
-    """ฟังก์ชันสำหรับสร้างการเชื่อมต่อกับ MySQL Database"""
-    return pymysql.connect(**DB_CONFIG)
+    """
+    ฟังก์ชันสำหรับเชื่อมต่อฐานข้อมูล MySQL ด้วย pymysql
+    """
+    try:
+        # ใช้ **DB_CONFIG เพื่อกระจายค่าใน Dictionary เข้าไปในคำสั่ง connect
+        connection = pymysql.connect(**DB_CONFIG)
+        return connection
+    except pymysql.MySQLError as e:
+        print(f"Error connecting to the database: {e}")
+        return None
