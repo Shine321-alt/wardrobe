@@ -4,11 +4,7 @@ export default function ProductColors({ color, selectedColorId, setSelectedColor
 
     const selectedColor = color.find(c => c.Color_ID === selectedColorId)
 
-    const handleSelect = (id) => {
-        setSelectedColorId(id)
-    }
-
-    return(
+    return (
         <div className="product-color">
 
             <p className="product-color-label">
@@ -18,16 +14,14 @@ export default function ProductColors({ color, selectedColorId, setSelectedColor
             <div className="product-colors-switch">
 
                 {color.map((item) => (
-
                     <button
                         key={item.Color_ID}
                         type="button"
                         className={`color-select ${item.Color_ID === selectedColorId ? 'color-select--active' : ''}`}
-                        onClick={() => handleSelect(item.Color_ID)}
+                        onClick={() => setSelectedColorId(item.Color_ID)}
                     >
-                        <img src={item.Image_URL} alt={item.Color_Name}/>
+                        <img src={item.Image_URL} alt={item.Color_Name} />
                     </button>
-
                 ))}
 
             </div>
