@@ -3,6 +3,8 @@
 """
 import json
 import os
+import pymysql
+from mysql.connector import connect, Error
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), '../data/products.json')
 
@@ -30,3 +32,26 @@ def get_all_collections():
     """ดึงคอลเลคชั่นทั้งหมด"""
     data = load_data()
     return data.get('collections', [])
+
+
+DB_CONFIG = {
+    'host': os.getenv('MYSQL_HOST', 'ballast.proxy.rlwy.net'),
+    'port': int(os.getenv('MYSQL_PORT', '58189')),
+    'user': os.getenv('MYSQL_USER', 'root'),
+    'password': os.getenv('MYSQL_PASSWORD', 'WwPUUjhdUgqxIBxwqhDdwSxTYcShwuVR'),
+    'database': os.getenv('MYSQL_DB', 'Ecommerce'),
+    'cursorclass': pymysql.cursors.DictCursor,
+    'charset': 'utf8mb4'
+}
+
+def get_db_connection():
+    """
+    ฟังก์ชันสำหรับเชื่อมต่อฐานข้อมูล MySQL ด้วย pymysql
+    """
+    try:
+        # ใช้ **DB_CONFIG เพื่อกระจายค่าใน Dictionary เข้าไปในคำสั่ง connect
+        connection = pymysql.connect(**DB_CONFIG)
+        return connection
+    except pymysql.MySQLError as e:
+        print(f"Error connecting to the database: {e}")
+        return None

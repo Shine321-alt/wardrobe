@@ -45,29 +45,28 @@ export default function LoginForm() {
 
   // ทำงานเมื่อผู้ใช้กดปุ่ม Login
 const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = validate();
+    setErrors(newErrors);
 
-  e.preventDefault();
-  const newErrors = validate();// เรียก validate เพื่อตรวจสอบข้อมูลที่ผู้ใช้กรอก
-  setErrors(newErrors);// เก็บ error ที่ได้ลงใน state เพื่อแสดงข้อความ error บนหน้า UI
+    if(Object.keys(newErrors).length === 0){
+      try{
+        // ส่งต่อให้ authService จัดการ
+        await login(form.identifier, form.password);
+        
+        contextLogin(form.identifier);
+        navigate("/");
 
-  if(Object.keys(newErrors).length === 0){// ตรวจสอบว่ามี error หรือไม่
-    try{
-
-      await login(form.identifier, form.password);// ส่ง identifier และ password ไปตรวจสอบกับ login จาก authService
-      
-      // ===============================
-      // Update AuthContext ว่า user ได้ login สำเร็จแล้ว
-      // ===============================
-      // ส่ง identifier (email หรือ username) ไปเก็บใน context
-      contextLogin(form.identifier);
-      
-      navigate("/");// เปลี่ยนหน้าไปที่ /dashboard หลังจาก login สำเร็จ
-
-    }catch (err){
-      console.log(err);// ถ้า login ไม่สำเร็จ จะแสดง error ใน console
+      }catch (err){
+        // ⚠️ เพิ่มการจับ Error จาก Backend มาแสดงหน้าเว็บ
+        console.error("Login Error:", err);
+        // สมมติว่า Backend ส่ง error กลับมาในรูปแบบ err.response.data.error (ถ้าใช้ axios)
+        setErrors({ 
+          submit: err.response?.data?.error || "Login failed. Please check your credentials." 
+        });
+      }
     }
-  }
-};
+  };
     
 
   return (
@@ -122,6 +121,13 @@ const handleSubmit = async (e) => {
           Forget password?
         </Link>
       </div>
+
+      {/* แสดง Error กรณีล็อกอินไม่ผ่าน */}
+      {errors.submit && (
+        <p className="form-error" style={{ textAlign: 'center', marginBottom: '10px' }}>
+          {errors.submit}
+        </p>
+      )}
 
       {/* Submit */}
       <button type="submit" className="form-submit">
