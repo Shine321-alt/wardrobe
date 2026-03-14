@@ -1,26 +1,35 @@
 import { useState } from "react";
 import { Mail, User, Lock, Eye, EyeOff } from "lucide-react";
 import "../../styles/SignUpForm.css";
+import { register } from "../../services/authService";
 
 export default function SignUpForm() {
+
+  // state สำหรับ toggle แสดง/ซ่อน password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // state เก็บค่าจาก form
   const [form, setForm] = useState({
     email: "",
     username: "",
     password: "",
     confirmPassword: "",
   });
+
+  // state เก็บ error message
   const [errors, setErrors] = useState({});
 
+  // อัปเดตค่า input เมื่อ user พิมพ์
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ตรวจสอบข้อมูลก่อน submit
   const validate = () => {
     const newErrors = {};
 
-    // Email
+    // ตรวจสอบ Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!form.email) {
       newErrors.email = "Please enter your email";
@@ -30,17 +39,17 @@ export default function SignUpForm() {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Username
+    // ตรวจสอบ Username
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
     if (!form.username) {
       newErrors.username = "Please enter your username";
     } else if (/\s/.test(form.username)) {
       newErrors.username = "Username must not contain spaces";
     } else if (!usernameRegex.test(form.username)) {
-      newErrors.username = "Username must be 3-20 characters, letters, numbers and _ only";
+      newErrors.username = "Username must be 3-20 characters";
     }
 
-    // Password
+    // ตรวจสอบ Password
     if (!form.password) {
       newErrors.password = "Please enter your password";
     } else if (/\s/.test(form.password)) {
@@ -49,7 +58,7 @@ export default function SignUpForm() {
       newErrors.password = "Password must be at least 8 characters";
     }
 
-    // Confirm Password
+    // ตรวจสอบ Confirm Password
     if (!form.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (form.password !== form.confirmPassword) {
@@ -59,12 +68,29 @@ export default function SignUpForm() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  // ทำงานเมื่อกด Sign Up
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const newErrors = validate();
     setErrors(newErrors);
+
+    // ถ้าไม่มี error → เรียก API register
     if (Object.keys(newErrors).length === 0) {
-      console.log(form); // ← เชื่อม API ใน Step ถัดไป
+      try {
+        const res = await register({
+          email: form.email,
+          username: form.username,
+          password: form.password,
+        });
+
+        console.log("Signup success:", res);
+        alert("Signup successful!");
+
+      } catch (error) {
+        console.error("Signup error:", error);
+        alert("Signup failed");
+      }
     }
   };
 
@@ -151,7 +177,7 @@ export default function SignUpForm() {
         )}
       </div>
 
-      {/* Submit */}
+      {/* ปุ่มสมัครสมาชิก */}
       <button type="submit" className="form-submit">
         Sign up
       </button>
@@ -161,7 +187,7 @@ export default function SignUpForm() {
         <span>Or continue with</span>
       </div>
 
-      {/* Google */}
+      {/* Google Login (ยังไม่ได้เชื่อม API) */}
       <button type="button" className="form-google">
         <img src="https://www.google.com/favicon.ico" alt="Google" width={16} />
         Google

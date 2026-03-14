@@ -1,7 +1,6 @@
 import pymysql
 from utils.db import get_db_connection
-# คอมเมนต์บรรทัดนี้ไว้ก่อน (เพื่อปิดการใช้งานชั่วคราว)
-# from werkzeug.security import check_password_hash
+from services.user_service import create_user
 
 def authenticate_user(identifier, password):
     conn = get_db_connection()
@@ -35,3 +34,19 @@ def authenticate_user(identifier, password):
     finally:
         if conn:
             conn.close()
+
+# ==========================================
+# REGISTER USER (Signup)
+# ==========================================
+def register_user(username, email, password):
+
+    # เรียก create_user จาก user_service
+    success = create_user(username, email, password)
+
+    if not success:
+        return None
+
+    return {
+        "username": username,
+        "email": email
+    }

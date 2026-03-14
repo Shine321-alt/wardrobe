@@ -1,38 +1,58 @@
-// ไฟล์นี้จะเก็บ baseURL และตั้งค่า withCredentials เพื่อให้ cookie ถูกส่งไป backend
+// ไฟล์นี้ใช้สำหรับเรียก API ที่เกี่ยวกับ authentication
+// ใช้ axios instance จากไฟล์ api.js (มี baseURL และ withCredentials)
 import api from "./api";
 
+
 /*
-  ฟังก์ชัน login
-  ใช้สำหรับส่งข้อมูล login ไปตรวจสอบกับ backend
-  รับค่า identifier (email หรือ username) และ password
+  LOGIN
+  ส่ง identifier (email หรือ username) และ password ไปตรวจสอบกับ backend
 */
 export const login = async (identifier, password) => {
 
-  // ส่ง request แบบ POST ไปที่ endpoint /login
-  // โดยส่ง identifier และ password ไปใน body
   const response = await api.post("/login", {
     identifier: identifier,
     password: password
   });
 
-  // ส่ง response กลับไปให้ไฟล์ที่เรียกใช้ LoginForm.jsx
   return response.data;
 };
 
 
 /*
-  ฟังก์ชัน logout
-  ใช้สำหรับ logout ผู้ใช้
-  backend จะทำการลบ cookie token
+  REGISTER (SIGN UP)
+  ใช้สำหรับสมัครสมาชิกใหม่
+*/
+export const register = async (data) => {
+
+  const response = await api.post("/signup", data);
+
+  return response.data;
+};
+
+
+/*
+  LOGOUT
+  เรียก API เพื่อให้ backend ลบ session / cookie
 */
 export const logout = async () => {
 
-  // เรียก API /logout เพื่อให้ backend clear cookie
   const response = await api.post("/logout");
 
   return response.data;
 };
 
+
+/*
+  GET CURRENT USER
+  ตรวจสอบ session ปัจจุบันจาก cookie token
+  ใช้สำหรับ restore session ตอนเปิดแอป
+*/
+export const getCurrentUser = async () => {
+
+  const response = await api.get("/me");
+
+  return response.data;
+};
 
 /*
   ฟังก์ชัน getMe
@@ -44,20 +64,6 @@ export const logout = async () => {
 export const getMe = async () => {
 
   // เรียก API /me เพื่อตรวจสอบ token และดึงข้อมูล user
-  const response = await api.get("/me");
-
-  return response.data;
-};
-
-
-/*
-  ฟังก์ชัน getCurrentUser
-  ใช้สำหรับดึงข้อมูล user ที่ login อยู่
-  backend จะตรวจ token จาก cookie ก่อน
-*/
-export const getCurrentUser = async () => {
-
-  // เรียก API /me หรือ /profile เพื่อดึงข้อมูล user
   const response = await api.get("/me");
 
   return response.data;

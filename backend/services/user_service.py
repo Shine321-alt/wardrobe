@@ -1,11 +1,10 @@
 import pymysql
 from utils.db import get_db_connection 
-from werkzeug.security import generate_password_hash
 
 # ==========================================
 # C : CREATE (สร้างข้อมูลใหม่)
 # ==========================================
-def create_user(username, email, password, role='user'):
+def create_user(username, email, password, role='customer'):
     conn = get_db_connection()
     
     try:
