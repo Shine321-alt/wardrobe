@@ -30,3 +30,18 @@ def get_all_collections():
     """ดึงคอลเลคชั่นทั้งหมด"""
     data = load_data()
     return data.get('collections', [])
+
+
+DB_CONFIG = {
+    'host': os.getenv('MYSQL_HOST', 'ballast.proxy.rlwy.net'),
+    'port': int(os.getenv('MYSQL_PORT', '58189')),
+    'user': os.getenv('MYSQL_USER', 'root'),
+    'password': os.getenv('MYSQL_PASSWORD', 'WwPUUjhdUgqxIBxwqhDdwSxTYcShwuVR'),
+    'database': os.getenv('MYSQL_DB', 'Ecommerce'),
+    'cursorclass': pymysql.cursors.DictCursor,
+    'charset': 'utf8mb4'
+}
+
+def get_db_connection():
+    """ฟังก์ชันสำหรับสร้างการเชื่อมต่อกับ MySQL Database"""
+    return pymysql.connect(**DB_CONFIG)
