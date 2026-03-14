@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Mail, User, Lock, Eye, EyeOff } from "lucide-react";
 import "../../styles/SignUpForm.css";
 import { register } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpForm() {
 
   // state สำหรับ toggle แสดง/ซ่อน password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const navigate = useNavigate();
 
   // state เก็บค่าจาก form
   const [form, setForm] = useState({
@@ -86,6 +89,9 @@ export default function SignUpForm() {
 
         console.log("Signup success:", res);
         alert("Signup successful!");
+
+        // redirect ไปหน้า login
+        navigate("/login");
 
       } catch (error) {
         console.error("Signup error:", error);
