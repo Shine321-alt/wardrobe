@@ -46,18 +46,37 @@ def get_products():
 
 
 # -------------------------
-# GET product by id
+# GET product info by id
 # -------------------------
-@products_bp.route('/products/<int:product_id>', methods=['GET'])
-def get_product(product_id):
+@products_bp.route('/products/<int:product_id>/<int:color_id>/<int:size_id>', methods=['GET'])
+def get_product(product_id, color_id, size_id):
 
     conn = get_db_connection()
 
     with conn.cursor() as cur:
-        cur.execute(
-            "SELECT * FROM products WHERE Product_ID=%s",
-            (product_id,)
-        )
+        cur.execute("""
+            SELECT
+                p.Product_ID,
+                p.Product_Name,
+                p.Category,
+                p.Description,
+                v.Price,
+                v.Stock,
+                c.Color_Name,
+                s.Size_Name
+            FROM products p
+            JOIN product_variants v 
+                ON p.Product_ID = v.Product_ID
+            JOIN colors c 
+                ON v.Color_ID = c.Color_ID
+            JOIN sizes s 
+                ON v.Size_ID = s.Size_ID
+            WHERE 
+                p.Product_ID = %s
+                AND v.Color_ID = %s
+                AND v.Size_ID = %s
+        """, (product_id, color_id, size_id))
+
         product = cur.fetchone()
 
     conn.close()
@@ -67,6 +86,84 @@ def get_product(product_id):
 
     return jsonify(product)
 
+# -------------------------
+# GET product colors by product id
+# -------------------------
+@products_bp.route('/products/<int:product_id>', methods=['GET'])
+def get_product_colors(product_id):
+
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT DISTINCT
+                c.Color_ID,
+                c.Color_Name,
+                pi.Image_URL
+            FROM product_variants pv
+            JOIN colors c
+                ON pv.Color_ID = c.Color_ID
+            JOIN product_images pi
+                ON pv.Variant_ID = pi.Variant_ID
+            WHERE pv.Product_ID = %s
+        """, (product_id,))
+
+        colors = cur.fetchall()
+
+    conn.close()
+
+    return jsonify(colors)
+
+# -------------------------
+# GET product sizes by product id
+# -------------------------
+@products_bp.route('/products/<int:product_id>/<int:color_id>', methods=['GET'])
+def get_product_sizes(product_id, color_id):
+
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT DISTINCT
+                s.Size_ID,
+                s.Size_Name,
+                pv.Stock
+            FROM product_variants pv
+            JOIN sizes s
+                ON pv.Size_ID = s.Size_ID
+            WHERE pv.Product_ID = %s
+            AND pv.Color_ID = %s
+        """, (product_id, color_id))
+
+        sizes = cur.fetchall()
+
+    conn.close()
+
+    return jsonify(sizes)
+
+# -------------------------
+# GET product images by product id
+# -------------------------
+@products_bp.route('/products/<int:product_id>/images', methods=['GET'])
+def get_product_images(product_id):
+
+    conn = get_db_connection()
+
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT DISTINCT
+                pi.Image_URL
+            FROM product_variants pv
+            JOIN product_images pi
+                ON pv.Variant_ID = pi.Variant_ID
+            WHERE pv.Product_ID = %s
+        """, (product_id,))
+
+        images = cur.fetchall()
+
+    conn.close()
+
+    return jsonify(images)
 
 # -------------------------
 # CREATE product + variants
@@ -76,12 +173,13 @@ def get_product(product_id):
 # -------------------------
 @products_bp.route('/products', methods=['POST'])
 def create_product():
+
     data = request.json or {}
 
     product_name = data.get('product_name')
     category = data.get('category')
     description = data.get('description')
-    variants = data.get('variants')
+    variants = data.get('variants', [])
 
     if not product_name:
         return jsonify({"error": "product_name is required"}), 400
@@ -91,234 +189,167 @@ def create_product():
     try:
         with conn.cursor() as cur:
 
-            # ---------- CHECK PRODUCT ----------
+            # ---------- PRODUCT ----------
+            cur.execute("""
+                INSERT INTO products (Product_Name, Category, Description)
+                VALUES (%s,%s,%s)
+                ON DUPLICATE KEY UPDATE
+                Category=VALUES(Category),
+                Description=VALUES(Description)
+            """, (product_name, category, description))
+
             cur.execute(
-                "SELECT Product_ID FROM products WHERE Product_Name = %s",
+                "SELECT Product_ID FROM products WHERE Product_Name=%s",
                 (product_name,)
             )
-            product = cur.fetchone()
 
-            if product:
-                product_id = product['Product_ID']
-                exists = True
+            product_id = cur.fetchone()['Product_ID']
 
-                # UPDATE DESCRIPTION + CATEGORY
-                cur.execute("""
-                    UPDATE products
-                    SET Category=%s, Description=%s
-                    WHERE Product_ID=%s
-                """, (category, description, product_id))
+            # ---------- PRELOAD COLORS ----------
+            cur.execute("SELECT Color_ID, Color_Name FROM colors")
+            colors = {c['Color_Name']: c['Color_ID'] for c in cur.fetchall()}
 
-            else:
-                cur.execute("""
-                    INSERT INTO products (Product_Name, Category, Description)
-                    VALUES (%s,%s,%s)
-                """, (product_name, category, description))
+            # ---------- PRELOAD SIZES ----------
+            cur.execute("SELECT Size_ID, Size_Name FROM sizes")
+            sizes = {s['Size_Name']: s['Size_ID'] for s in cur.fetchall()}
 
-                product_id = cur.lastrowid
-                exists = False
+            # ---------- PRELOAD VARIANTS ----------
+            cur.execute("""
+                SELECT Variant_ID, Color_ID, Size_ID
+                FROM product_variants
+                WHERE Product_ID=%s
+            """, (product_id,))
 
-            # ---------- VARIANTS ----------
+            existing_variants = {
+                (v['Color_ID'], v['Size_ID']): v['Variant_ID']
+                for v in cur.fetchall()
+            }
+
+            variant_rows = []
+            image_rows = []
             created_variants = []
-            created_images = []
 
-            if variants and isinstance(variants, list):
+            # ---------- PROCESS VARIANTS ----------
+            for v in variants:
 
-                try:
-                    for v in variants:
+                color = v.get('color')
+                size = v.get('size')
+                price = v.get('price')
+                stock = v.get('stock')
 
-                        color = v.get('color')
-                        size = v.get('size')
-                        price = v.get('price')
-                        stock = v.get('stock')
-
-                        if not all([color, size, price is not None, stock is not None]):
-                            raise ValueError('variant missing required fields')
-
-                        # ---------- COLOR ----------
-                        cur.execute(
-                            "SELECT Color_ID FROM colors WHERE Color_Name=%s",
-                            (color,)
-                        )
-                        c = cur.fetchone()
-
-                        if c:
-                            color_id = c['Color_ID']
-                        else:
-                            cur.execute(
-                                "INSERT INTO colors (Color_Name) VALUES (%s)",
-                                (color,)
-                            )
-                            color_id = cur.lastrowid
-
-                        # ---------- SIZE ----------
-                        cur.execute(
-                            "SELECT Size_ID FROM sizes WHERE Size_Name=%s",
-                            (size,)
-                        )
-                        s = cur.fetchone()
-
-                        if s:
-                            size_id = s['Size_ID']
-                        else:
-                            cur.execute(
-                                "INSERT INTO sizes (Size_Name) VALUES (%s)",
-                                (size,)
-                            )
-                            size_id = cur.lastrowid
-
-                        # ---------- VARIANT ----------
-                        cur.execute("""
-                            SELECT Variant_ID, Price, Stock
-                            FROM product_variants
-                            WHERE Product_ID=%s AND Color_ID=%s AND Size_ID=%s
-                        """, (product_id, color_id, size_id))
-
-                        variant = cur.fetchone()
-
-                        if variant:
-                            variant_id = variant['Variant_ID']
-
-                            existing_price = variant.get('Price')
-                            existing_stock = variant.get('Stock')
-
-                            if price != existing_price or stock != existing_stock:
-                                cur.execute("""
-                                    UPDATE product_variants
-                                    SET Price=%s, Stock=%s
-                                    WHERE Variant_ID=%s
-                                """, (price, stock, variant_id))
-
-                        else:
-                            cur.execute("""
-                                INSERT INTO product_variants
-                                (Product_ID, Color_ID, Size_ID, Price, Stock)
-                                VALUES (%s,%s,%s,%s,%s)
-                            """, (
-                                product_id,
-                                color_id,
-                                size_id,
-                                price,
-                                stock
-                            ))
-
-                            variant_id = cur.lastrowid
-
-                        created_variants.append(variant_id)
-
-                        # ---------- IMAGES ----------
-                        imgs = v.get('images') or v.get('image_url')
-
-                        if imgs:
-
-                            if isinstance(imgs, str):
-                                imgs = [imgs]
-
-                            url = imgs[0]
-
-                            cur.execute(
-                                "SELECT Image_ID FROM product_images WHERE Variant_ID=%s",
-                                (variant_id,)
-                            )
-
-                            img = cur.fetchone()
-
-                            if img:
-                                cur.execute("""
-                                    UPDATE product_images
-                                    SET Image_URL=%s
-                                    WHERE Variant_ID=%s
-                                """, (url, variant_id))
-
-                                created_images.append(img['Image_ID'])
-
-                            else:
-                                cur.execute("""
-                                    INSERT INTO product_images (Variant_ID, Image_URL)
-                                    VALUES (%s,%s)
-                                """, (variant_id, url))
-
-                                created_images.append(cur.lastrowid)
-
-                except IntegrityError:
+                if not all([color, size, price is not None, stock is not None]):
                     conn.rollback()
-                    return jsonify({"error": "one or more variants conflict (duplicate)"}), 400
+                    return jsonify({"error": "variant missing fields"}), 400
 
-                except ValueError as e:
-                    conn.rollback()
-                    return jsonify({"error": str(e)}), 400
+                # COLOR
+                if color not in colors:
+                    cur.execute(
+                        "INSERT INTO colors (Color_Name) VALUES (%s)",
+                        (color,)
+                    )
+                    colors[color] = cur.lastrowid
+
+                color_id = colors[color]
+
+                # SIZE
+                if size not in sizes:
+                    cur.execute(
+                        "INSERT INTO sizes (Size_Name) VALUES (%s)",
+                        (size,)
+                    )
+                    sizes[size] = cur.lastrowid
+
+                size_id = sizes[size]
+
+                variant_rows.append(
+                    (product_id, color_id, size_id, price, stock)
+                )
+
+                # IMAGE
+                imgs = v.get('images') or v.get('image_url')
+
+                if imgs:
+                    if isinstance(imgs, str):
+                        imgs = [imgs]
+
+                    image_rows.append((color_id, size_id, imgs[0]))
+
+            # ---------- UPSERT VARIANTS ----------
+            cur.executemany("""
+                INSERT INTO product_variants
+                (Product_ID, Color_ID, Size_ID, Price, Stock)
+                VALUES (%s,%s,%s,%s,%s)
+                ON DUPLICATE KEY UPDATE
+                Price=VALUES(Price),
+                Stock=VALUES(Stock)
+            """, variant_rows)
+
+            # ---------- GET VARIANT IDS ----------
+            cur.execute("""
+                SELECT Variant_ID, Color_ID, Size_ID
+                FROM product_variants
+                WHERE Product_ID=%s
+            """, (product_id,))
+
+            variant_map = {
+                (v['Color_ID'], v['Size_ID']): v['Variant_ID']
+                for v in cur.fetchall()
+            }
+
+            # ---------- PREPARE IMAGE UPSERT ----------
+            img_rows = []
+
+            for color_id, size_id, url in image_rows:
+
+                variant_id = variant_map.get((color_id, size_id))
+
+                if variant_id:
+                    img_rows.append((variant_id, url))
+                    created_variants.append(variant_id)
+
+            if img_rows:
+                cur.executemany("""
+                    INSERT INTO product_images (Variant_ID, Image_URL)
+                    VALUES (%s,%s)
+                    ON DUPLICATE KEY UPDATE
+                    Image_URL=VALUES(Image_URL)
+                """, img_rows)
 
             conn.commit()
 
-        if exists:
             return jsonify({
-                "message": "product updated",
+                "message": "product created/updated",
                 "Product_ID": product_id,
-                "created_variants": created_variants,
-                "created_images": created_images
-            })
-        else:
-            return jsonify({
-                "message": "product created",
-                "Product_ID": product_id,
-                "created_variants": created_variants,
-                "created_images": created_images
+                "variants": created_variants
             })
 
     finally:
         conn.close()
 
-
 # -------------------------
-# UPDATE product
+# get Name size by id 
 # -------------------------
-@products_bp.route('/products/<int:product_id>', methods=['PUT'])
-def update_product(product_id):
-
-    data = request.json
+@products_bp.route('/sizes/<int:size_id>', methods=['GET'])
+def get_size_name(size_id):
 
     conn = get_db_connection()
 
     with conn.cursor() as cur:
-
         cur.execute("""
-            UPDATE products
-            SET Product_Name=%s,
-                Category=%s,
-                Description=%s
-            WHERE Product_ID=%s
-        """, (
-            data.get('product_name'),
-            data.get('category'),
-            data.get('description'),
-            product_id
-        ))
+            SELECT Size_ID, Size_Name
+            FROM sizes
+            WHERE Size_ID = %s
+        """, (size_id,))
 
-        conn.commit()
+        size = cur.fetchone()
 
     conn.close()
 
-    return jsonify({"message": "product updated"})
+    if not size:
+        return jsonify({"error": "Size not found"}), 404
 
+    return jsonify(size)
 
-# -------------------------
-# DELETE product
-# -------------------------
-@products_bp.route('/products/<int:product_id>', methods=['DELETE'])
-def delete_product(product_id):
-
-    conn = get_db_connection()
-
-    with conn.cursor() as cur:
-        cur.execute(
-            "DELETE FROM products WHERE Product_ID=%s",
-            (product_id,)
-        )
-        conn.commit()
-
-    conn.close()
-
-    return jsonify({"message": "product deleted"})
 
 
 # -------------------------
@@ -378,7 +409,7 @@ def product_cards():
         GROUP BY p.Product_ID
 
         ORDER BY p.Product_ID DESC
-        LIMIT 5
+        LIMIT 4
         """)
 
         products = cur.fetchall()
@@ -420,3 +451,4 @@ def product_details(product_id):
     conn.close()
 
     return jsonify(products)
+

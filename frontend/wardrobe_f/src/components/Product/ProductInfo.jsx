@@ -1,29 +1,81 @@
-import '../../styles/ProductInfo.css'  
-import ProductTitle from './ProductInfo/ProductTitle';
-import ProductSize from './ProductInfo/ProductSize';
+import '../../styles/ProductInfo.css'
+import ProductTitle from './ProductInfo/ProductTitle'
+import ProductSize from './ProductInfo/ProductSize'
 import ProductColors from './ProductInfo/ProductColors'
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+
+export default function ProductInfo({ 
+    product_id,
+    color, 
+    size, 
+    selectedColorId,
+    selectedSizeId,
+    setSelectedColorId, 
+    setSelectedSizeId 
+})  {
+
+    const [info, setInfo] = useState(null)
+    const [sizeinfo,setsizeinfo] = useState(null)
+
+    useEffect(() => {
+
+        if(!product_id || !selectedColorId || !selectedSizeId) return
+
+        axios.get(`${API_URL}/api/products/${product_id}/${selectedColorId}/${selectedSizeId}`)
+        .then(res => {
+            setInfo(res.data)
+        })
+
+    }, [product_id, selectedColorId, selectedSizeId])
+
+    useEffect(() => {
+
+        if(!selectedSizeId) return
+
+        axios.get(`${API_URL}/api/sizes/${selectedSizeId}`)
+        .then(res => {
+            setsizeinfo(res.data)
+        })
+
+    }, [selectedSizeId])
 
 
-
-
-export default function ProductInfo({ product, selectedIndex, onSelectedIndexChange })  {
-
-  
     return(
         <div className='product-info'>
-            <ProductTitle product={product[selectedIndex]}/>
-              {/* description */}
-            <ProductSize product={product} onIndexChange={onSelectedIndexChange} Index={selectedIndex}/>
 
-            {/* Add to Cart */}
-            <button className={`product-add-btn ${selectedIndex === null? 'product-add-btn--disabled' : ''}`} disabled={selectedIndex === null} >
-              {selectedIndex !== null? `Add to Cart — Size ${product[selectedIndex].Size_Name}` :`Select a Size`}
+            <ProductTitle 
+                Name={info?.Product_Name} 
+                Category={info?.Category} 
+                Price={info?.Price} 
+            />
+
+            <ProductColors 
+                color={color} 
+                selectedColorId={selectedColorId}
+                setSelectedColorId={setSelectedColorId}
+            />
+
+            <ProductSize 
+                size={size} 
+                selectedSizeId={selectedSizeId}
+                setSelectedSizeId={setSelectedSizeId}
+            />
+            <button 
+                className={`product-add-btn ${!selectedSizeId ? 'product-add-btn--disabled' : ''}`} 
+                disabled={!selectedSizeId}
+            >
+              {selectedSizeId 
+                ? `Add to Cart — Size ${sizeinfo?.Size_Name}` 
+                : `Select a Size`}
             </button>
 
             <div className="product-description">
-              <p>{product[selectedIndex].Description}</p>
+                <p>{info?.Description}</p>
             </div>
+
         </div>
     )
 }

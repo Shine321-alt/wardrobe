@@ -3,18 +3,18 @@ import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import '../../styles/ProductGallery.css'
 
-export default function ProductGallery({ product }) {
+export default function ProductGallery({ Gallery}) {
     const [current, setCurrent] = useState(0);
 
-    if (!product) return <p>Loading...</p>
+    if (!Gallery) return <p>Loading...</p>
 
-    const prev = () => setCurrent(i => (i - 1 + product.length) % product.length);
-    const next = () => setCurrent(i => (i + 1) % product.length);
+    const prev = () => setCurrent(i => (i - 1 + Gallery.length) % Gallery.length);
+    const next = () => setCurrent(i => (i + 1) % Gallery.length);
     return(
       <div className="gallery-sticky"> 
         <div className='gallery-product'>
             <div className='photo'>
-                <img src={product[current].Image_URL} alt={product[current].Product_Name} />
+                <img src={Gallery[current].Image_URL} alt="product" />
             </div>
 
             <div className='gallery-wishlist'>
