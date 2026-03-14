@@ -5,25 +5,19 @@ from werkzeug.security import generate_password_hash
 # ==========================================
 # C : CREATE (สร้างข้อมูลใหม่)
 # ==========================================
-def create_user(username, email, password):
-    """ฟังก์ชันสำหรับสร้าง User ใหม่ลงใน Database (Create)"""
+def create_user(username, email, password, role='user'):
     conn = get_db_connection()
-    
-    # เข้ารหัสผ่านก่อนบันทึกลงฐานข้อมูล (ห้ามเก็บรหัสผ่านเป็น Text ปกติเด็ดขาด)
-    hashed_password = generate_password_hash(password)
     
     try:
         with conn.cursor() as cur:
-            # แก้ชื่อตารางเป็น user และแก้ชื่อคอลัมน์ให้ตรง DB
             cur.execute("""
-                INSERT INTO user (Username, Email, Password) 
-                VALUES (%s, %s, %s)
-            """, (username, email, hashed_password))
+                INSERT INTO user (Username, Email, Password, Role) 
+                VALUES (%s, %s, %s, %s)
+            """, (username, email, password, role))
         conn.commit()
-        return True # คืนค่า True ถ้ายืนยันการสร้างสำเร็จ
+        return True
     except Exception as e:
         conn.rollback()
-        print(f"Error creating user: {e}")
         return False
     finally:
         conn.close()

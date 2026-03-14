@@ -57,7 +57,10 @@ def login():
     # ===============================
     # สร้าง JWT token
     # ===============================
-    token = generate_token(user["User_ID"])
+    token = generate_token({
+    "user_id": user["User_ID"],
+    "role": user["Role"]  # ดึงค่า Role จาก DB มาใส่ในตั๋ว
+})
 
 
     # ===============================
