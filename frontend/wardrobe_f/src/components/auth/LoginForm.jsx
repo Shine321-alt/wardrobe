@@ -118,7 +118,7 @@ const handleSubmit = async (e) => {
           <span>Remember me</span>
         </label>
         <Link to="/forgot-password" className="form-forgot">
-          Forget password?
+          Forgot password?
         </Link>
       </div>
 
