@@ -7,7 +7,7 @@ import "../../styles/LoginForm.css";
 
 export default function LoginForm() {
   
-  const navigate = useNavigate();// ใช้สำหรับเปลี่ยนหน้าไปที่ /dashboard หลังจาก login สำเร็จ
+  const navigate = useNavigate();
   
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -16,9 +16,6 @@ export default function LoginForm() {
   });
   const [errors, setErrors] = useState({});
   
-  // ===============================
-  // ใช้ useAuth hook เพื่อ update state ใน AuthContext
-  // ===============================
   const { login: contextLogin } = useAuth();
 
   const handleChange = (e) => {
@@ -43,31 +40,24 @@ export default function LoginForm() {
     return newErrors;
   };
 
-  // ทำงานเมื่อผู้ใช้กดปุ่ม Login
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validate();
     setErrors(newErrors);
 
-    if(Object.keys(newErrors).length === 0){
-      try{
-        // ส่งต่อให้ authService จัดการ
+    if (Object.keys(newErrors).length === 0) {
+      try {
         await login(form.identifier, form.password);
-        
         contextLogin(form.identifier);
         navigate("/");
-
-      }catch (err){
-        // ⚠️ เพิ่มการจับ Error จาก Backend มาแสดงหน้าเว็บ
+      } catch (err) {
         console.error("Login Error:", err);
-        // สมมติว่า Backend ส่ง error กลับมาในรูปแบบ err.response.data.error (ถ้าใช้ axios)
         setErrors({ 
           submit: err.response?.data?.error || "Login failed. Please check your credentials." 
         });
       }
     }
   };
-    
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
@@ -122,7 +112,6 @@ const handleSubmit = async (e) => {
         </Link>
       </div>
 
-      {/* แสดง Error กรณีล็อกอินไม่ผ่าน */}
       {errors.submit && (
         <p className="form-error" style={{ textAlign: 'center', marginBottom: '10px' }}>
           {errors.submit}
