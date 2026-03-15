@@ -5,6 +5,7 @@ import Productpage from './pages/ProductPage'
 import './styles/ComingSoon.css'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
+import MenPage from './pages/MenPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -21,7 +22,7 @@ export default function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/men" element={<ComingSoon label="Men" />} />
+          <Route path="/men" element={<MenPage />} />
           <Route path="/women" element={<ComingSoon label="Women" />} />
           <Route path="/kid" element={<ComingSoon label="Kid" />} />
           <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
