@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 .signup-form {
   width: 100%;
   display: flex;
@@ -5,31 +7,31 @@
   gap: 1rem;
 }
 
-.form-group {
+.signup-form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.form-group label {
+.signup-form-group label {
   font-size: 0.75rem;
   font-weight: 600;
   color: #6b7280;
 }
 
-.input-wrapper {
+.signup-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-icon {
+.signup-input-icon {
   position: absolute;
   left: 12px;
   color: #9ca3af;
 }
 
-.input-wrapper input {
+.signup-input-wrapper input {
   width: 100%;
   padding: 14px 40px;
   border: 1px solid #e5e7eb;
@@ -40,34 +42,50 @@
   transition: border-color 0.2s;
 }
 
-.input-wrapper input::placeholder {
+.signup-input-wrapper input::placeholder {
   color: #d1d5db;
   font-size: 0.8rem;
 }
 
-.input-wrapper input:focus {
+.signup-input-wrapper input:focus {
   border-color: #ef4444;
 }
 
-.input-eye {
+/* ซ่อน built-in eye icon ของ browser */
+.signup-input-wrapper input[type="password"]::-ms-reveal,
+.signup-input-wrapper input[type="password"]::-ms-clear {
+  display: none;
+}
+
+.signup-input-wrapper input::-webkit-credentials-auto-fill-button,
+.signup-input-wrapper input::-webkit-contacts-auto-fill-button {
+  display: none;
+}
+
+.signup-input-eye {
   position: absolute;
   right: 12px;
   color: #9ca3af;
   cursor: pointer;
   transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
 
-.input-eye:hover {
+.signup-input-eye:hover {
   color: #374151;
 }
 
-.form-error {
+.signup-form-error {
   font-size: 0.75rem;
   color: #ef4444;
   margin-top: 2px;
 }
 
-.form-submit {
+.signup-form-submit {
   width: 100%;
   padding: 0.875rem;
   background: linear-gradient(to right, #ef4444, #6b7280);
@@ -80,11 +98,11 @@
   margin-top: 0.5rem;
 }
 
-.form-submit:hover {
+.signup-form-submit:hover {
   opacity: 0.9;
 }
 
-.form-divider {
+.signup-form-divider {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -92,15 +110,15 @@
   font-size: 0.8rem;
 }
 
-.form-divider::before,
-.form-divider::after {
+.signup-form-divider::before,
+.signup-form-divider::after {
   content: '';
   flex: 1;
   height: 1px;
   background-color: #e5e7eb;
 }
 
-.form-google {
+.signup-form-google {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #e5e7eb;
@@ -117,6 +135,6 @@
   background-color: #ffffff;
 }
 
-.form-google:hover {
+.signup-form-google:hover {
   border-color: #9ca3af;
 }
