@@ -49,7 +49,7 @@ export default function Header() {
             <input type="text" placeholder="Search..." className="search-input" />
           </div>
           <button className="icon-btn"><Heart size={17} /></button>
-          <button className="icon-btn"><ShoppingBag size={17} /></button>
+          <Link to="/cart" className="icon-btn"><ShoppingBag size={17} /></Link>
           <button className="icon-btn"><User size={17} /></button>
         </div>
 
