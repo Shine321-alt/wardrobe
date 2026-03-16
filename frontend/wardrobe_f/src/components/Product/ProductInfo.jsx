@@ -10,7 +10,8 @@ export default function ProductInfo({
     selectedSizeId,
     selectedSize,
     setSelectedColorId,
-    setSelectedSizeId
+    setSelectedSizeId,
+    onAddToCart 
 }) {
     return (
         <div className='product-info'>
@@ -36,6 +37,7 @@ export default function ProductInfo({
             <button
                 className={`product-add-btn ${!selectedSizeId ? 'product-add-btn--disabled' : ''}`}
                 disabled={!selectedSizeId}
+                onClick={onAddToCart}
             >
                 {selectedSizeId
                     ? `Add to Cart — Size ${selectedSize?.Size_Name}`
