@@ -40,6 +40,8 @@ export default function ProductPage() {
     // โหลดรูป gallery เมื่อเปลี่ยนสี
     useEffect(() => {
         if (!selectedColorId) return
+
+        
         axios.get(`${API_URL}/api/products/${id}/images/${selectedColorId}`)
             .then(res => setGallery(res.data))
     }, [id, selectedColorId])
@@ -66,7 +68,7 @@ export default function ProductPage() {
         <div>
             <Announcement_Bar />
             <div className="product">
-                <ProductGallery gallery={gallery} />
+                <ProductGallery gallery={gallery} productId={Number(id)} />
                 <ProductInfo
                     product={product}
                     colors={colors}

@@ -1,0 +1,219 @@
+/* ============================================
+   WishlistPage.css
+   ============================================ */
+
+.wishlist-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+/* Header */
+.wishlist-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.wishlist-title {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.wishlist-count {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+/* Empty state */
+.wishlist-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 5rem 1rem;
+    text-align: center;
+}
+
+.wishlist-empty p {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.wishlist-shop-btn {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.wishlist-shop-btn:hover {
+    opacity: 0.5;
+}
+
+/* Grid */
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .wishlist-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card */
+.wishlist-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+}
+
+.wishlist-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+/* Heart button — อยู่ในกรอบรูป */
+.wishlist-heart {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 10;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+
+.wishlist-heart:hover {
+    transform: scale(1.2);
+}
+
+/* Image */
+.wishlist-card-image {
+    background-color: #f3f4f6;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    margin: 0.75rem 0.75rem 0;
+    border-radius: 12px;
+}
+
+.wishlist-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.wishlist-card:hover .wishlist-card-image img {
+    transform: scale(1.05);
+}
+
+/* Info */
+.wishlist-card-info {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/* ชื่อ + ราคา อยู่แถวเดียวกัน */
+.wishlist-card-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.wishlist-card-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0;
+    color: #111;
+}
+
+.wishlist-card-price {
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    margin: 0;
+    color: #111;
+}
+
+.wishlist-card-category {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin: 0 0 0.5rem;
+}
+
+/* Add to Cart button */
+.wishlist-add-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 0.25rem;
+}
+
+.wishlist-add-btn:hover {
+    opacity: 0.75;
+}
+
+/* Loading */
+.wishlist-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+}
+
+/* Link ครอบรูป + info */
+.wishlist-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* wrapper ปุ่ม Add to Cart */
+.wishlist-card-action {
+    padding: 0 0.75rem 0.75rem;
+}

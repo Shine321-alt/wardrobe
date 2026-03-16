@@ -7,17 +7,18 @@ import os
 import pymysql
 from pymysql.cursors import DictCursor
 from dotenv import load_dotenv
+from utils.token import verify_token
 
 load_dotenv()
 
 products_bp = Blueprint('products', __name__)
 
 DB_CONFIG = {
-    'host': os.getenv('MYSQL_HOST', 'ballast.proxy.rlwy.net'),
-    'port': int(os.getenv('MYSQL_PORT', '58189')),
-    'user': os.getenv('MYSQL_USER', 'root'),
-    'password': os.getenv('MYSQL_PASSWORD', 'WwPUUjhdUgqxIBxwqhDdwSxTYcShwuVR'),
-    'database': os.getenv('MYSQL_DB', 'Ecommerce'),
+    'host': os.getenv('MYSQL_HOST'),
+    'port': int(os.getenv('MYSQL_PORT')),
+    'user': os.getenv('MYSQL_USER'),
+    'password': os.getenv('MYSQL_PASSWORD'),
+    'database': os.getenv('MYSQL_DB'),
     'cursorclass': DictCursor,
     'charset': 'utf8mb4'
 }
@@ -25,6 +26,26 @@ DB_CONFIG = {
 
 def get_db_connection():
     return pymysql.connect(**DB_CONFIG)
+
+
+def get_user_id_from_request():
+    """ดึง user_id จาก JWT token ใน cookie"""
+    token = request.cookies.get('token')
+    if not token:
+        return None
+
+    payload = verify_token(token)
+    if not payload:
+        return None
+
+    user_id = payload.get('user_id')
+
+    # ป้องกันกรณี token ถูก generate ผิด → user_id ซ้อนเป็น dict
+    # เช่น {'user_id': {'user_id': 2, 'role': 'customer'}, 'exp': ...}
+    if isinstance(user_id, dict):
+        user_id = user_id.get('user_id')
+
+    return user_id
 
 
 # -------------------------
@@ -62,6 +83,7 @@ def get_product(product_id):
                 JOIN colors c ON pv.Color_ID = c.Color_ID
                 JOIN sizes s ON pv.Size_ID = s.Size_ID
                 WHERE p.Product_ID = %s
+                ORDER BY FIELD(s.Size_Name, 'XS', 'S', 'M', 'L', 'XL', 'XXL')
             """, (product_id,))
 
             rows = cur.fetchall()
@@ -119,7 +141,8 @@ def get_product_images(product_id, color_id):
             return jsonify([r['Image_URL'] for r in images])
     finally:
         conn.close()
-        
+
+
 # -------------------------
 # CREATE / UPDATE product
 # -------------------------
@@ -198,12 +221,12 @@ def create_product():
 
                 variant_rows.append((product_id, color_id, size_id, price, stock))
 
-                # IMAGE — รองรับหลายรูปต่อ variant ✅
+                # IMAGE — รองรับหลายรูปต่อ variant
                 imgs = v.get('images') or v.get('image_url')
                 if imgs:
                     if isinstance(imgs, str):
                         imgs = [imgs]
-                    for url in imgs:        # ← วนทุกรูป
+                    for url in imgs:
                         image_rows.append((color_id, size_id, url))
 
             # ---------- UPSERT VARIANTS ----------
@@ -228,7 +251,7 @@ def create_product():
                 for v in cur.fetchall()
             }
 
-            # ---------- INSERT IMAGES — ไม่ทับรูปเก่า ✅ ----------
+            # ---------- INSERT IMAGES ----------
             img_rows = []
             for color_id, size_id, url in image_rows:
                 variant_id = variant_map.get((color_id, size_id))
@@ -302,3 +325,114 @@ def product_cards():
         products = cur.fetchall()
     conn.close()
     return jsonify(products)
+
+
+# =========================================
+# WISHLIST
+# =========================================
+
+# -------------------------
+# WISHLIST — toggle like
+# -------------------------
+@products_bp.route('/wishlist/<int:product_id>', methods=['POST'])
+def toggle_wishlist(product_id):
+    # ดึง user_id จาก JWT token ใน cookie
+    user_id = get_user_id_from_request()
+
+    # ถ้าไม่มี token หรือ token ไม่ถูกต้อง → 401
+    if not user_id:
+        return jsonify({"error": "unauthorized"}), 401
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+
+            # เช็คว่า like อยู่แล้วไหม
+            cur.execute("""
+                SELECT Like_ID FROM `like`
+                WHERE User_ID = %s AND Product_ID = %s
+            """, (user_id, product_id))
+
+            existing = cur.fetchone()
+
+            if existing:
+                # ถ้า like อยู่แล้ว → unlike (ลบออก)
+                cur.execute("""
+                    DELETE FROM `like`
+                    WHERE User_ID = %s AND Product_ID = %s
+                """, (user_id, product_id))
+                liked = False
+            else:
+                # ถ้ายังไม่ like → like (เพิ่มเข้าไป)
+                cur.execute("""
+                    INSERT INTO `like` (User_ID, Product_ID)
+                    VALUES (%s, %s)
+                """, (user_id, product_id))
+                liked = True
+
+            conn.commit()
+            return jsonify({"liked": liked})
+
+    finally:
+        conn.close()
+
+
+# -------------------------
+# WISHLIST — check like status
+# -------------------------
+@products_bp.route('/wishlist/<int:product_id>', methods=['GET'])
+def get_wishlist_status(product_id):
+    # ดึง user_id จาก JWT token ใน cookie
+    user_id = get_user_id_from_request()
+
+    # ถ้าไม่ได้ login → ส่ง liked = false กลับไป (ไม่ error)
+    if not user_id:
+        return jsonify({"liked": False})
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT Like_ID FROM `like`
+                WHERE User_ID = %s AND Product_ID = %s
+            """, (user_id, product_id))
+
+            existing = cur.fetchone()
+            # bool(existing) → True ถ้าเจอ, False ถ้าไม่เจอ
+            print("liked status:", bool(existing), "user:", user_id, "product:", product_id)
+            return jsonify({"liked": bool(existing)})
+
+    finally:
+        conn.close()
+
+# -------------------------
+# WISHLIST — get all liked products
+# -------------------------
+@products_bp.route('/wishlist', methods=['GET'])
+def get_wishlist():
+    user_id = get_user_id_from_request()
+    if not user_id:
+        return jsonify({"error": "unauthorized"}), 401
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT
+                    p.Product_ID,
+                    p.Product_Name,
+                    p.Category,
+                    MIN(pv.Price) AS Price,
+                    MIN(img.Image_URL) AS Image_URL
+                FROM `like` l
+                JOIN products p ON l.Product_ID = p.Product_ID
+                JOIN product_variants pv ON p.Product_ID = pv.Product_ID
+                LEFT JOIN product_images img ON pv.Variant_ID = img.Variant_ID
+                WHERE l.User_ID = %s
+                GROUP BY p.Product_ID
+                ORDER BY l.Like_ID DESC
+            """, (user_id,))
+            rows = cur.fetchall()
+        return jsonify(rows)
+    finally:
+        conn.close()

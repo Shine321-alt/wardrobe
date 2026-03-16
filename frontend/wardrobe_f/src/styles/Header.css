@@ -111,3 +111,7 @@
 .icon-btn:hover {
   color: #ef4444;
 }
+
+.user-menu-wrapper {
+  position: relative;
+}
