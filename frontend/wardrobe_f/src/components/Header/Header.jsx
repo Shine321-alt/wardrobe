@@ -14,8 +14,8 @@ const navLinks = [
 ]
 
 export default function Header() {
-  const [activeMenu, setActiveMenu] = useState(null)   // nav ไหนที่ hover อยู่
-  const [showUserMenu, setShowUserMenu] = useState(false)  // แสดง dropdown user ไหม
+  const [activeMenu, setActiveMenu] = useState(null)      // nav ไหนที่ hover อยู่
+  const [showUserMenu, setShowUserMenu] = useState(false) // แสดง dropdown user ไหม
   const location = useLocation()
   const { user } = useAuth()  // ดึงสถานะ login จาก context
 
@@ -34,8 +34,8 @@ export default function Header() {
             <div
               key={label}
               className="nav-item"
-              onMouseEnter={() => setActiveMenu(label)}   // hover → เปิด MegaMenu
-              onMouseLeave={() => setActiveMenu(null)}    // ออก → ปิด MegaMenu
+              onMouseEnter={() => setActiveMenu(label)}  // hover → เปิด MegaMenu
+              onMouseLeave={() => setActiveMenu(null)}   // ออก → ปิด MegaMenu
             >
               <Link
                 to={to}
@@ -66,14 +66,16 @@ export default function Header() {
           </Link>
 
           {/* Cart icon */}
-          <button className="icon-btn"><ShoppingBag size={17} /></button>
+          <Link to="/cart" className="icon-btn">
+            <ShoppingBag size={17} />
+          </Link>
 
           {/* User icon — ถ้า login แสดง dropdown, ถ้าไม่ login พาไป /login */}
           {user ? (
             <div
               className="user-menu-wrapper"
-              onMouseEnter={() => setShowUserMenu(true)}   // hover → เปิด dropdown
-              onMouseLeave={() => setShowUserMenu(false)}  // ออก → ปิด dropdown
+              onMouseEnter={() => setShowUserMenu(true)}  // hover → เปิด dropdown
+              onMouseLeave={() => setShowUserMenu(false)} // ออก → ปิด dropdown
             >
               <button className="icon-btn">
                 <User size={17} />
@@ -88,9 +90,6 @@ export default function Header() {
             </Link>
           )}
 
-          <button className="icon-btn"><Heart size={17} /></button>
-          <Link to="/cart" className="icon-btn"><ShoppingBag size={17} /></Link>
-          <button className="icon-btn"><User size={17} /></button>
         </div>
 
       </div>

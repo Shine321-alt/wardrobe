@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail } from "lucide-react";
 import "../../styles/LoginForm.css";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
 
 export default function ForgotPasswordForm() {
 
@@ -51,7 +52,7 @@ export default function ForgotPasswordForm() {
                 // ==========================================
                 // เรียก API ไปที่ backend เพื่อสร้าง reset token
                 // ==========================================
-                const res = await fetch("http://localhost:5000/api/forgot-password", {
+                const res = await fetch(`${API_URL}/api/forgot-password`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

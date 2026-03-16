@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/LoginForm.css";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
 
 export default function ResetPasswordForm() {
 
@@ -65,8 +66,8 @@ export default function ResetPasswordForm() {
 
         // ==========================================
         // ส่ง request ไป backend เพื่อ reset password
-        // ==========================================
-        const res = await fetch("http://localhost:5000/api/reset-password", {
+        // =======================$===================
+        const res = await fetch(`${API_URL}/api/reset-password`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

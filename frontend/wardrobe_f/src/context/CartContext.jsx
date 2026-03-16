@@ -15,10 +15,11 @@ export const CartProvider = ({ children }) => {
   // Backend ใช้ httpOnly Cookie → ไม่ต้องส่ง Authorization header
   // แค่ตั้ง withCredentials: true axios จะส่ง cookie ไปให้เอง
   // ─────────────────────────────────────────────────────────────────
+  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/cart', {
+      const res = await axios.get(`${API_URL}/api/cart`, {
         withCredentials: true,
       });
 
