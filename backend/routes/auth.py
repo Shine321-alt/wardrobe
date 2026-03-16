@@ -1,69 +1,54 @@
-# Blueprint ใช้สำหรับแยก route ออกจาก server หลัก
+# ==========================================
+# Blueprint สำหรับแยก route ของ auth ออกจาก app หลัก
+# ==========================================
 from flask import Blueprint, request, jsonify, make_response
 
-# import service สำหรับตรวจสอบ user ตอน login
-from services.auth_service import authenticate_user
-
-# import service สำหรับสร้าง user ใหม่ (signup)
+# services
+from services.auth_service import (
+    authenticate_user,
+    create_reset_token,
+    reset_user_password
+)
 from services.user_service import create_user
 
-# import function สำหรับสร้างและตรวจสอบ JWT token
+# JWT utilities
 from utils.token import generate_token, verify_token
 
 
-# ===============================
-# สร้าง Blueprint
-# ===============================
-# ใช้ Blueprint เพื่อแยก module auth ออกจาก app หลัก
+# ==========================================
+# Auth Blueprint
+# ใช้รวม route เกี่ยวกับ authentication
+# ==========================================
 auth_bp = Blueprint("auth", __name__)
 
 
-# ===============================
-# Login API
-# ===============================
-# Endpoint: POST /login
+# ==========================================
+# Login
+# ==========================================
 @auth_bp.route("/login", methods=["POST"])
 def login():
 
-    # รับข้อมูล JSON จาก request
+    # รับข้อมูลจาก frontend
     data = request.get_json()
-
-    # ตรวจสอบว่ามี JSON ส่งมาหรือไม่
     if not data:
         return jsonify({"error": "Invalid request"}), 400
 
-    # ดึง identifier และ password จาก request
-    # identifier สามารถเป็น email หรือ username ได้
+    # identifier = email หรือ username
     identifier = data.get("identifier")
     password = data.get("password")
 
-    # ตรวจสอบว่ามีข้อมูลครบหรือไม่
     if not identifier or not password:
-        return jsonify({
-            "error": "Identifier and password are required"
-        }), 400
+        return jsonify({"error": "Identifier and password are required"}), 400
 
-    # เรียก service เพื่อตรวจสอบข้อมูล user จาก database
+    # ตรวจสอบ user ใน database
     user = authenticate_user(identifier, password)
-
-    # ถ้า user ไม่ถูกต้อง (login ไม่ผ่าน)
     if not user:
         return jsonify({"error": "Invalid credentials"}), 401
 
-
-    # ===============================
     # สร้าง JWT token
-    # ===============================
-    # เก็บ user_id และ role ลงใน token
-    token = generate_token({
-        "user_id": user["User_ID"],
-        "role": user["Role"]
-    })
+    token = generate_token(user["User_ID"])
 
-
-    # ===============================
-    # สร้าง response กลับไป frontend
-    # ===============================
+    # สร้าง response
     response = make_response(jsonify({
         "message": "Login successful",
         "user": {
@@ -72,57 +57,45 @@ def login():
         }
     }))
 
-
-    # ===============================
-    # เก็บ token ลงใน cookie
-    # ===============================
-    # httponly = ป้องกัน javascript access cookie
-    # samesite = ป้องกัน CSRF บางส่วน
+    # เก็บ token ใน cookie
     response.set_cookie(
         "token",
         token,
-        httponly=True,
+        httponly=True,   # ป้องกัน JS access
         samesite="Lax",
-        secure=False
+        secure=False     # dev mode (production ต้อง True)
     )
 
     return response
 
 
-# ===============================
-# Get Current User API (ตรวจสอบ session)
-# ===============================
-# Endpoint: GET /me
-# ใช้ตรวจสอบว่าผู้ใช้ login อยู่หรือไม่
+# ==========================================
+# Check current user (session)
+# ใช้ตรวจว่า user login อยู่หรือไม่
+# ==========================================
 @auth_bp.route("/me", methods=["GET"])
 def get_current_user():
 
-    # ดึง token จาก cookie
+    # อ่าน token จาก cookie
     token = request.cookies.get("token")
-
-    # ถ้าไม่มี token แสดงว่ายังไม่ได้ login
     if not token:
         return jsonify({"error": "Token not found"}), 401
 
-    # ตรวจสอบ token
+    # verify token
     payload = verify_token(token)
-
-    # ถ้า token หมดอายุหรือไม่ถูกต้อง
     if not payload:
         return jsonify({"error": "Invalid or expired token"}), 401
 
-    # ส่งข้อมูล user_id ที่อยู่ใน token กลับไป
+    # ส่ง user_id กลับ
     return jsonify({
         "user_id": payload["user_id"],
         "message": "Token is valid"
     }), 200
 
 
-# ===============================
-# Logout API
-# ===============================
-# Endpoint: POST /logout
-# ใช้สำหรับ logout โดยลบ cookie token
+# ==========================================
+# Logout
+# ==========================================
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
 
@@ -131,7 +104,7 @@ def logout():
         "message": "Logout successful"
     }))
 
-    # ลบ cookie โดยตั้งค่า max_age = 0
+    # ลบ cookie token
     response.set_cookie(
         "token",
         "",
@@ -144,42 +117,82 @@ def logout():
     return response
 
 
-# ===============================
-# Signup API
-# ===============================
-# Endpoint: POST /signup
-# ใช้สำหรับสมัครสมาชิกใหม่
+# ==========================================
+# Signup
+# ==========================================
 @auth_bp.route("/signup", methods=["POST"])
 def signup():
 
-    # รับข้อมูล JSON จาก frontend
+    # รับข้อมูลจาก frontend
     data = request.get_json()
-
-    # ถ้า request ไม่มีข้อมูล
     if not data:
         return jsonify({"error": "Invalid request"}), 400
 
-    # ดึงข้อมูลจาก request
     email = data.get("email")
     username = data.get("username")
     password = data.get("password")
 
-    # ตรวจสอบว่ามีข้อมูลครบหรือไม่
+    # ตรวจสอบว่ากรอกครบหรือไม่
     if not email or not username or not password:
-        return jsonify({
-            "error": "Email, username and password are required"
-        }), 400
+        return jsonify({"error": "Email, username and password are required"}), 400
 
-    # เรียก user_service เพื่อสร้าง user ใหม่ใน database
+    # เรียก service เพื่อสร้าง user ใหม่
     success = create_user(username, email, password)
 
-    # ถ้า create ไม่สำเร็จ (เช่น user ซ้ำ)
     if not success:
-        return jsonify({
-            "error": "User already exists"
-        }), 400
+        return jsonify({"error": "User already exists"}), 400
 
-    # สมัครสำเร็จ
+    return jsonify({"message": "Signup successful"}), 201
+
+
+# ==========================================
+# Forgot Password
+# ==========================================
+@auth_bp.route("/forgot-password", methods=["POST"])
+def forgot_password():
+
+    # รับ email จาก frontend
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid request"}), 400
+
+    email = data.get("email")
+
+    # สร้าง reset token
+    result = create_reset_token(email)
+
+    # ถ้าไม่พบ email ในระบบ
+    if not result:
+        return jsonify({"error": "Email not found"}), 404
+
+    # ส่ง reset link กลับ (dev mode)
     return jsonify({
-        "message": "Signup successful"
-    }), 201
+        "message": "Reset link generated",
+        "reset_link": result
+    })
+
+
+# ==========================================
+# Reset Password
+# ==========================================
+@auth_bp.route("/reset-password", methods=["POST"])
+def reset_password():
+
+    # รับ token และ password ใหม่
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid request"}), 400
+
+    token = data.get("token")
+    password = data.get("password")
+
+    # เรียก service เพื่อเปลี่ยน password
+    success = reset_user_password(token, password)
+
+    # token invalid หรือหมดอายุ
+    if not success:
+        return jsonify({"error": "Invalid or expired token"}), 400
+
+    return jsonify({
+        "message": "Password reset successful"
+    })

@@ -104,10 +104,10 @@ export default function SignUpForm() {
     <form className="signup-form" onSubmit={handleSubmit}>
 
       {/* Email */}
-      <div className="form-group">
+      <div className="signup-form-group">
         <label>Email address</label>
-        <div className="input-wrapper">
-          <Mail size={16} className="input-icon" />
+        <div className="signup-input-wrapper">
+          <Mail size={16} className="signup-input-icon" />
           <input
             type="email"
             name="email"
@@ -116,14 +116,14 @@ export default function SignUpForm() {
             onChange={handleChange}
           />
         </div>
-        {errors.email && <p className="form-error">{errors.email}</p>}
+        {errors.email && <p className="signup-form-error">{errors.email}</p>}
       </div>
 
       {/* Username */}
-      <div className="form-group">
+      <div className="signup-form-group">
         <label>Username</label>
-        <div className="input-wrapper">
-          <User size={16} className="input-icon" />
+        <div className="signup-input-wrapper">
+          <User size={16} className="signup-input-icon" />
           <input
             type="text"
             name="username"
@@ -132,14 +132,14 @@ export default function SignUpForm() {
             onChange={handleChange}
           />
         </div>
-        {errors.username && <p className="form-error">{errors.username}</p>}
+        {errors.username && <p className="signup-form-error">{errors.username}</p>}
       </div>
 
       {/* Password */}
-      <div className="form-group">
+      <div className="signup-form-group">
         <label>Password</label>
-        <div className="input-wrapper">
-          <Lock size={16} className="input-icon" />
+        <div className="signup-input-wrapper">
+          <Lock size={16} className="signup-input-icon" />
           <input
             type={showPassword ? "text" : "password"}
             name="password"
@@ -149,20 +149,20 @@ export default function SignUpForm() {
           />
           <button
             type="button"
-            className="input-eye"
+            className="signup-input-eye"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
-        {errors.password && <p className="form-error">{errors.password}</p>}
+        {errors.password && <p className="signup-form-error">{errors.password}</p>}
       </div>
 
       {/* Confirm Password */}
-      <div className="form-group">
+      <div className="signup-form-group">
         <label>Confirm Password</label>
-        <div className="input-wrapper">
-          <Lock size={16} className="input-icon" />
+        <div className="signup-input-wrapper">
+          <Lock size={16} className="signup-input-icon" />
           <input
             type={showConfirm ? "text" : "password"}
             name="confirmPassword"
@@ -172,29 +172,29 @@ export default function SignUpForm() {
           />
           <button
             type="button"
-            className="input-eye"
+            className="signup-input-eye"
             onClick={() => setShowConfirm(!showConfirm)}
           >
             {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {errors.confirmPassword && (
-          <p className="form-error">{errors.confirmPassword}</p>
+          <p className="signup-form-error">{errors.confirmPassword}</p>
         )}
       </div>
 
       {/* ปุ่มสมัครสมาชิก */}
-      <button type="submit" className="form-submit">
+      <button type="submit" className="signup-form-submit">
         Sign up
       </button>
 
       {/* Divider */}
-      <div className="form-divider">
+      <div className="signup-form-divider">
         <span>Or continue with</span>
       </div>
 
-      {/* Google Login (ยังไม่ได้เชื่อม API) */}
-      <button type="button" className="form-google">
+      {/* Google Login */}
+      <button type="button" className="signup-form-google">
         <img src="https://www.google.com/favicon.ico" alt="Google" width={16} />
         Google
       </button>

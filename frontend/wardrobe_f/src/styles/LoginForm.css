@@ -43,12 +43,28 @@
   border-color: #ef4444;
 }
 
+/* ซ่อน built-in eye icon ของ browser */
+.input-wrapper input[type="password"]::-ms-reveal,
+.input-wrapper input[type="password"]::-ms-clear {
+  display: none;
+}
+
+.input-wrapper input::-webkit-credentials-auto-fill-button,
+.input-wrapper input::-webkit-contacts-auto-fill-button {
+  display: none;
+}
+
 .input-eye {
   position: absolute;
   right: 12px;
   color: #9ca3af;
   cursor: pointer;
   transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
 
 .input-eye:hover {

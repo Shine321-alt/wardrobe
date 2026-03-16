@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.products import products_bp
 from routes.auth import auth_bp
-
+from routes.cart import cart_bp
 app = Flask(__name__)
 
 # ===============================
@@ -21,6 +21,8 @@ CORS(app,
 app.register_blueprint(products_bp, url_prefix='/api')
 # routes login
 app.register_blueprint(auth_bp, url_prefix="/api")
+# routes cart
+app.register_blueprint(cart_bp, url_prefix="/api")
 
 @app.route('/', methods=['GET'])
 def home():

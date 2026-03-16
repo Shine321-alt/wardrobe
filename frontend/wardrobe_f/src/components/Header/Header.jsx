@@ -88,6 +88,9 @@ export default function Header() {
             </Link>
           )}
 
+          <button className="icon-btn"><Heart size={17} /></button>
+          <Link to="/cart" className="icon-btn"><ShoppingBag size={17} /></Link>
+          <button className="icon-btn"><User size={17} /></button>
         </div>
 
       </div>

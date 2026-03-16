@@ -68,3 +68,32 @@ export const getMe = async () => {
 
   return response.data;
 };
+
+
+/*
+  FORGOT PASSWORD
+  ส่ง email ไปให้ backend เพื่อสร้าง reset token
+*/
+export const forgotPassword = async (email) => {
+
+  const response = await api.post("/forgot-password", {
+    email: email
+  });
+
+  return response.data;
+};
+
+
+/*
+  RESET PASSWORD
+  ส่ง token และ password ใหม่ไปให้ backend
+*/
+export const resetPassword = async (token, password) => {
+
+  const response = await api.post("/reset-password", {
+    token: token,
+    password: password
+  });
+
+  return response.data;
+};

@@ -1,0 +1,131 @@
+/* MenPage.css */
+
+.men-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.men-subnav {
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.men-subnav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.men-subnav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.men-subnav-link {
+  white-space: nowrap;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #374151;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+
+.men-subnav-link:hover,
+.men-subnav-link.active {
+  color: #D21312;
+  border-bottom-color: #D21312;
+}
+
+.men-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 1rem 0 1rem;
+  width: 100%;
+}
+
+.men-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.men-section-title {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.men-section-viewall {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  border-bottom: 1px solid #6b7280;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.men-section-viewall:hover {
+  color: #000;
+  border-color: #000;
+}
+
+.men-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+}
+
+.men-product-card {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
+
+.men-product-card-image {
+  background-color: #EEEEEE;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.men-product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.men-product-card:hover .men-product-card-image img {
+  transform: scale(1.05);
+}
+
+.men-page-spacing {
+  height: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .men-product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

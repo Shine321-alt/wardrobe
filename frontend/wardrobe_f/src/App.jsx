@@ -7,6 +7,10 @@ import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import WishlistPage from './pages/WishlistPage'
 
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import MenPage from './pages/MenPage'
+import CartPage from './pages/CartPage'
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">
@@ -18,11 +22,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* Auth Pages */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/men" element={<ComingSoon label="Men" />} />
+          <Route path="/men" element={<MenPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/women" element={<ComingSoon label="Women" />} />
           <Route path="/kid" element={<ComingSoon label="Kid" />} />
           <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
@@ -31,6 +41,7 @@ export default function App() {
           <Route path="/product/:id" element={<Productpage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
+
       </Routes>
     </BrowserRouter>
   )
