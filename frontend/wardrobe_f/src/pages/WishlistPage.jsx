@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { Heart } from 'lucide-react'
-import '../styles/WishlistPage.css'
+import '../styles/Wishlistpage.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
