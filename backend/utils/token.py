@@ -2,7 +2,7 @@ import jwt
 import datetime
 
 # secret key สำหรับ encode token
-SECRET_KEY = "mysecretkey"
+SECRET_KEY = "wardrobe_super_secret_key_2026"
 
 
 def generate_token(user_id):

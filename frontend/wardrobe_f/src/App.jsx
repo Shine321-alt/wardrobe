@@ -9,6 +9,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import MenPage from './pages/MenPage'
 import CartPage from './pages/CartPage'
+import ProtectedRoute from './components/ProtectedRoute'
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">
@@ -18,28 +19,35 @@ const ComingSoon = ({ label }) => (
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+  <BrowserRouter>
+    <Routes>
 
-        {/* Auth Pages */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      {/* Auth Pages */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
+      {/* Public pages */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/men" element={<MenPage />} />
+        <Route path="/women" element={<ComingSoon label="Women" />} />
+        <Route path="/kid" element={<ComingSoon label="Kid" />} />
+        <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
+        <Route path="/sale" element={<ComingSoon label="Sale" />} />
+        <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
+        <Route path="/product/:id" element={<Productpage />} />
+      </Route>
+
+      {/* Protected pages — ต้อง login */}
+      <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/men" element={<MenPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/women" element={<ComingSoon label="Women" />} />
-          <Route path="/kid" element={<ComingSoon label="Kid" />} />
-          <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
-          <Route path="/sale" element={<ComingSoon label="Sale" />} />
-          <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
-          <Route path="/product/:id" element={<Productpage />} />
         </Route>
+      </Route>
 
-      </Routes>
-    </BrowserRouter>
+    </Routes>
+  </BrowserRouter>
   )
 }
