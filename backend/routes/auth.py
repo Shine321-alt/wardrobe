@@ -46,10 +46,7 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 401
 
     # สร้าง JWT token
-    token = generate_token({
-        "user_id": user["User_ID"],
-        "role": user["Role"]
-    })
+    token = generate_token(user["User_ID"])
 
     # สร้าง response
     response = make_response(jsonify({
