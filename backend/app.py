@@ -9,14 +9,21 @@ from routes.auth import auth_bp
 from routes.cart import cart_bp
 app = Flask(__name__)
 
+FRONTEND_URL = os.environ.get(
+    "FRONTEND_URL",
+    "http://localhost:5173"
+)
+
 # ===============================
 # ตั้งค่า CORS
 # ===============================
 # ต้องตั้ง credentials=True เพื่อให้ cookie ส่งไปได้
 # และ origins เพื่อ allow frontend ที่ http://localhost:5173
-CORS(app, 
-     origins=["http://localhost:5173"],
-     supports_credentials=True)
+CORS(
+    app,
+    origins=[FRONTEND_URL],
+    supports_credentials=True
+)
 
 # Register blueprints
 app.register_blueprint(products_bp, url_prefix='/api')
