@@ -5,6 +5,7 @@ import Productpage from './pages/ProductPage'
 import './styles/ComingSoon.css'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
+import WishlistPage from './pages/WishlistPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -28,7 +29,7 @@ export default function App() {
           <Route path="/sale" element={<ComingSoon label="Sale" />} />
           <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
           <Route path="/product/:id" element={<Productpage />} />
-          
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

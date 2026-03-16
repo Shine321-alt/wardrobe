@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import MegaMenu from './MegaMenu'
+import UserDropdown from './Userdropdown'
+import { useAuth } from '../../context/AuthContext'
 import '../../styles/Header.css'
 
 const navLinks = [
@@ -12,45 +14,80 @@ const navLinks = [
 ]
 
 export default function Header() {
-  const [activeMenu, setActiveMenu] = useState(null)
+  const [activeMenu, setActiveMenu] = useState(null)   // nav ไหนที่ hover อยู่
+  const [showUserMenu, setShowUserMenu] = useState(false)  // แสดง dropdown user ไหม
   const location = useLocation()
+  const { user } = useAuth()  // ดึงสถานะ login จาก context
 
   return (
     <header className="header">
       <div className="header-inner">
 
+        {/* Logo */}
         <Link to="/" className="header-logo">
           WARDROBE<span>+</span>
         </Link>
 
+        {/* Nav links + MegaMenu */}
         <nav className="header-nav">
           {navLinks.map(({ label, to }) => (
             <div
               key={label}
               className="nav-item"
-              onMouseEnter={() => setActiveMenu(label)}
-              onMouseLeave={() => setActiveMenu(null)}
+              onMouseEnter={() => setActiveMenu(label)}   // hover → เปิด MegaMenu
+              onMouseLeave={() => setActiveMenu(null)}    // ออก → ปิด MegaMenu
             >
               <Link
                 to={to}
-                className={`nav-link ${location.pathname === to ? 'nav-link--active' : ''} ${activeMenu === label ? 'nav-link--open' : ''}`}
+                className={`nav-link 
+                  ${location.pathname === to ? 'nav-link--active' : ''} 
+                  ${activeMenu === label ? 'nav-link--open' : ''}`}
               >
                 {label}
               </Link>
-
+              {/* แสดง MegaMenu เฉพาะ nav ที่ hover */}
               {activeMenu === label && <MegaMenu label={label} />}
             </div>
           ))}
         </nav>
 
+        {/* Action icons ขวา */}
         <div className="header-actions">
+
+          {/* Search bar */}
           <div className="search-wrapper">
             <Search size={14} className="search-icon" />
             <input type="text" placeholder="Search..." className="search-input" />
           </div>
-          <button className="icon-btn"><Heart size={17} /></button>
+
+          {/* Wishlist icon → ถ้า login พาไป /wishlist, ถ้าไม่ login พาไป /login */}
+          <Link to={user ? '/wishlist' : '/login'} className="icon-btn">
+            <Heart size={17} />
+          </Link>
+
+          {/* Cart icon */}
           <button className="icon-btn"><ShoppingBag size={17} /></button>
-          <button className="icon-btn"><User size={17} /></button>
+
+          {/* User icon — ถ้า login แสดง dropdown, ถ้าไม่ login พาไป /login */}
+          {user ? (
+            <div
+              className="user-menu-wrapper"
+              onMouseEnter={() => setShowUserMenu(true)}   // hover → เปิด dropdown
+              onMouseLeave={() => setShowUserMenu(false)}  // ออก → ปิด dropdown
+            >
+              <button className="icon-btn">
+                <User size={17} />
+              </button>
+              {showUserMenu && (
+                <UserDropdown onClose={() => setShowUserMenu(false)} />
+              )}
+            </div>
+          ) : (
+            <Link to="/login" className="icon-btn">
+              <User size={17} />
+            </Link>
+          )}
+
         </div>
 
       </div>
