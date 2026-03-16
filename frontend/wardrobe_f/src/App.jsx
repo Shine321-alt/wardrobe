@@ -47,6 +47,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route path="/cart" element={<CartPage />} />
+          
         </Route>
       </Route>
 
