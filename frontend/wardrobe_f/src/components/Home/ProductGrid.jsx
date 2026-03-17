@@ -17,7 +17,7 @@ export default function ProductGrid() {
       })
   }, [])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="product-loading">Loading...</p>
 
   return (
     <section className="product-section">

@@ -52,7 +52,7 @@ export default function ProductPage() {
             .then(res => setGallery(res.data))
     }, [id, selectedColorId])
 
-    if (!product) return <p>Loading...</p>
+    if (!product) return <p className="product-loading">Loading...</p>
 
     // หา colors และ sizes จาก product ที่โหลดมาแล้ว (ไม่ fetch ใหม่)
     const colors = product.colors
