@@ -39,7 +39,7 @@ const handleWishlist = () => {
 
 
 
-    if (!gallery || gallery.length === 0) return <p>Loading...</p>
+    if (!gallery || gallery.length === 0) return <div className="gallery-loading">Loading...</div>
 
     const prev = () => setCurrent(i => (i - 1 + gallery.length) % gallery.length)
     const next = () => setCurrent(i => (i + 1) % gallery.length)

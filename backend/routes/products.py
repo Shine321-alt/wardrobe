@@ -1,5 +1,6 @@
 """
 Product routes (Flask + MySQL)
+จัดการ API ทั้งหมดที่เกี่ยวกับ products และ wishlist
 """
 
 from flask import Blueprint, jsonify, request
@@ -13,23 +14,28 @@ load_dotenv()
 
 products_bp = Blueprint('products', __name__)
 
+# ตั้งค่าการเชื่อมต่อ Database จาก environment variables
 DB_CONFIG = {
     'host': os.getenv('MYSQL_HOST'),
     'port': int(os.getenv('MYSQL_PORT')),
     'user': os.getenv('MYSQL_USER'),
     'password': os.getenv('MYSQL_PASSWORD'),
     'database': os.getenv('MYSQL_DB'),
-    'cursorclass': DictCursor,
+    'cursorclass': DictCursor,  # ให้ผลลัพธ์เป็น dict แทน tuple
     'charset': 'utf8mb4'
 }
 
 
 def get_db_connection():
+    """สร้าง connection ใหม่ไปยัง MySQL ทุกครั้งที่เรียก"""
     return pymysql.connect(**DB_CONFIG)
 
 
 def get_user_id_from_request():
-    """ดึง user_id จาก JWT token ใน cookie"""
+    """
+    ดึง user_id จาก JWT token ใน cookie
+    คืนค่า user_id (int) หรือ None ถ้าไม่มี token / token ไม่ถูกต้อง
+    """
     token = request.cookies.get('token')
     if not token:
         return None
@@ -41,18 +47,26 @@ def get_user_id_from_request():
     user_id = payload.get('user_id')
 
     # ป้องกันกรณี token ถูก generate ผิด → user_id ซ้อนเป็น dict
-    # เช่น {'user_id': {'user_id': 2, 'role': 'customer'}, 'exp': ...}
+    # เช่น payload = {'user_id': {'user_id': 2, 'role': 'customer'}, 'exp': ...}
     if isinstance(user_id, dict):
         user_id = user_id.get('user_id')
 
     return user_id
 
 
+# =========================================
+# PRODUCTS
+# =========================================
+
 # -------------------------
 # GET product + all variants
 # -------------------------
 @products_bp.route('/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
+    """
+    ดึงข้อมูล product พร้อม variants ทั้งหมด
+    จัด structure เป็น colors → sizes เพื่อให้ frontend ใช้งานง่าย
+    """
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
@@ -60,6 +74,7 @@ def get_product(product_id):
                 SELECT 
                     p.Product_ID,
                     p.Product_Name,
+                    p.Type,
                     p.Category,
                     p.Description,
                     pv.Variant_ID,
@@ -90,14 +105,18 @@ def get_product(product_id):
             if not rows:
                 return jsonify({"error": "not found"}), 404
 
+            # สร้าง product object หลัก
             product = {
                 "Product_ID": rows[0]['Product_ID'],
                 "Product_Name": rows[0]['Product_Name'],
-                "Category": rows[0]['Category'],
+                "Type": rows[0]['Type'],         # Men / Women / Kid
+                "Category": rows[0]['Category'], # Shirts / Pants / Jacket
                 "Description": rows[0]['Description'],
                 "colors": {}
             }
 
+            # จัด group variants ตาม Color_ID
+            # แต่ละสีมี sizes หลายขนาด
             for r in rows:
                 cid = r['Color_ID']
                 if cid not in product['colors']:
@@ -115,6 +134,7 @@ def get_product(product_id):
                     "Variant_ID": r['Variant_ID']
                 })
 
+            # แปลง dict เป็น list เพื่อส่งไป frontend
             product['colors'] = list(product['colors'].values())
             return jsonify(product)
 
@@ -127,6 +147,7 @@ def get_product(product_id):
 # -------------------------
 @products_bp.route('/products/<int:product_id>/images/<int:color_id>', methods=['GET'])
 def get_product_images(product_id, color_id):
+    """ดึงรูปทั้งหมดของ product ตาม color ที่เลือก"""
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
@@ -148,11 +169,15 @@ def get_product_images(product_id, color_id):
 # -------------------------
 @products_bp.route('/products', methods=['POST'])
 def create_product():
-
+    """
+    สร้างหรืออัปเดต product พร้อม variants และรูปภาพ
+    ใช้ ON DUPLICATE KEY UPDATE เพื่อ upsert อัตโนมัติ
+    """
     data = request.json or {}
 
     product_name = data.get('product_name')
-    category = data.get('category')
+    type_ = data.get('type')          # Men / Women / Kid
+    category = data.get('category')   # Shirts / Pants / Jacket
     description = data.get('description')
     variants = data.get('variants', [])
 
@@ -165,25 +190,29 @@ def create_product():
         with conn.cursor() as cur:
 
             # ---------- PRODUCT ----------
+            # upsert product หลัก
             cur.execute("""
-                INSERT INTO products (Product_Name, Category, Description)
-                VALUES (%s,%s,%s)
+                INSERT INTO products (Product_Name, Type, Category, Description)
+                VALUES (%s,%s,%s,%s)
                 ON DUPLICATE KEY UPDATE
+                Type=VALUES(Type),
                 Category=VALUES(Category),
                 Description=VALUES(Description)
-            """, (product_name, category, description))
+            """, (product_name, type_, category, description))
 
+            # ดึง Product_ID ที่เพิ่ง insert/update
             cur.execute(
                 "SELECT Product_ID FROM products WHERE Product_Name=%s",
                 (product_name,)
             )
             product_id = cur.fetchone()['Product_ID']
 
-            # ---------- PRELOAD COLORS ----------
+            # ---------- PRELOAD COLORS & SIZES ----------
+            # โหลด color และ size ที่มีอยู่แล้วใน DB มาเก็บไว้
+            # เพื่อเช็คก่อนว่าต้อง insert เพิ่มไหม
             cur.execute("SELECT Color_ID, Color_Name FROM colors")
             colors = {c['Color_Name']: c['Color_ID'] for c in cur.fetchall()}
 
-            # ---------- PRELOAD SIZES ----------
             cur.execute("SELECT Size_ID, Size_Name FROM sizes")
             sizes = {s['Size_Name']: s['Size_ID'] for s in cur.fetchall()}
 
@@ -203,7 +232,7 @@ def create_product():
                     conn.rollback()
                     return jsonify({"error": "variant missing fields"}), 400
 
-                # COLOR
+                # ถ้าไม่มี color นี้ใน DB → สร้างใหม่
                 if color not in colors:
                     cur.execute(
                         "INSERT INTO colors (Color_Name) VALUES (%s)", (color,)
@@ -211,7 +240,7 @@ def create_product():
                     colors[color] = cur.lastrowid
                 color_id = colors[color]
 
-                # SIZE
+                # ถ้าไม่มี size นี้ใน DB → สร้างใหม่
                 if size not in sizes:
                     cur.execute(
                         "INSERT INTO sizes (Size_Name) VALUES (%s)", (size,)
@@ -221,7 +250,7 @@ def create_product():
 
                 variant_rows.append((product_id, color_id, size_id, price, stock))
 
-                # IMAGE — รองรับหลายรูปต่อ variant
+                # รองรับหลายรูปต่อ variant (images เป็น list หรือ string ก็ได้)
                 imgs = v.get('images') or v.get('image_url')
                 if imgs:
                     if isinstance(imgs, str):
@@ -240,12 +269,14 @@ def create_product():
             """, variant_rows)
 
             # ---------- GET VARIANT IDS ----------
+            # ดึง Variant_ID ที่เพิ่ง upsert เพื่อใช้ผูกกับรูปภาพ
             cur.execute("""
                 SELECT Variant_ID, Color_ID, Size_ID
                 FROM product_variants
                 WHERE Product_ID=%s
             """, (product_id,))
 
+            # map (Color_ID, Size_ID) → Variant_ID
             variant_map = {
                 (v['Color_ID'], v['Size_ID']): v['Variant_ID']
                 for v in cur.fetchall()
@@ -259,6 +290,7 @@ def create_product():
                     img_rows.append((variant_id, url))
                     created_variants.append(variant_id)
 
+            # INSERT IGNORE → ไม่ทับรูปเก่าที่มีอยู่แล้ว
             if img_rows:
                 cur.executemany("""
                     INSERT IGNORE INTO product_images (Variant_ID, Image_URL)
@@ -282,12 +314,14 @@ def create_product():
 # -------------------------
 @products_bp.route('/products/hero', methods=['GET'])
 def hero_product():
+    """ดึง product 6 อันล่าสุดสำหรับแสดงใน Hero Banner หน้าแรก"""
     conn = get_db_connection()
     with conn.cursor() as cur:
         cur.execute("""
             SELECT
                 p.Product_ID,
                 p.Product_Name,
+                p.Type,
                 p.Category,
                 p.Description,
                 MIN(pi.Image_URL) AS Image_URL
@@ -307,12 +341,15 @@ def hero_product():
 # -------------------------
 @products_bp.route('/products/arrivals', methods=['GET'])
 def product_cards():
+    """ดึง product 4 อันล่าสุดสำหรับแสดงใน New Arrivals section หน้าแรก"""
     conn = get_db_connection()
     with conn.cursor() as cur:
         cur.execute("""
             SELECT
                 p.Product_ID,
                 p.Product_Name,
+                p.Type,
+                p.Category,
                 MIN(pv.Price) AS Price,
                 MIN(img.Image_URL) AS Image_URL
             FROM products p
@@ -336,7 +373,11 @@ def product_cards():
 # -------------------------
 @products_bp.route('/wishlist/<int:product_id>', methods=['POST'])
 def toggle_wishlist(product_id):
-    # ดึง user_id จาก JWT token ใน cookie
+    """
+    Toggle like/unlike product
+    ถ้า like อยู่แล้ว → unlike (ลบออก)
+    ถ้ายังไม่ like → like (เพิ่มเข้าไป)
+    """
     user_id = get_user_id_from_request()
 
     # ถ้าไม่มี token หรือ token ไม่ถูกต้อง → 401
@@ -356,14 +397,14 @@ def toggle_wishlist(product_id):
             existing = cur.fetchone()
 
             if existing:
-                # ถ้า like อยู่แล้ว → unlike (ลบออก)
+                # like อยู่แล้ว → ลบออก (unlike)
                 cur.execute("""
                     DELETE FROM `like`
                     WHERE User_ID = %s AND Product_ID = %s
                 """, (user_id, product_id))
                 liked = False
             else:
-                # ถ้ายังไม่ like → like (เพิ่มเข้าไป)
+                # ยังไม่ like → เพิ่มเข้าไป
                 cur.execute("""
                     INSERT INTO `like` (User_ID, Product_ID)
                     VALUES (%s, %s)
@@ -382,10 +423,13 @@ def toggle_wishlist(product_id):
 # -------------------------
 @products_bp.route('/wishlist/<int:product_id>', methods=['GET'])
 def get_wishlist_status(product_id):
-    # ดึง user_id จาก JWT token ใน cookie
+    """
+    เช็คว่า user like product นี้อยู่ไหม
+    ถ้าไม่ได้ login → คืน liked: false (ไม่ error)
+    """
     user_id = get_user_id_from_request()
 
-    # ถ้าไม่ได้ login → ส่ง liked = false กลับไป (ไม่ error)
+    # ไม่ได้ login → liked = false
     if not user_id:
         return jsonify({"liked": False})
 
@@ -399,17 +443,18 @@ def get_wishlist_status(product_id):
 
             existing = cur.fetchone()
             # bool(existing) → True ถ้าเจอ, False ถ้าไม่เจอ
-            print("liked status:", bool(existing), "user:", user_id, "product:", product_id)
             return jsonify({"liked": bool(existing)})
 
     finally:
         conn.close()
+
 
 # -------------------------
 # WISHLIST — get all liked products
 # -------------------------
 @products_bp.route('/wishlist', methods=['GET'])
 def get_wishlist():
+    """ดึง product ทั้งหมดที่ user like ไว้ เรียงจากใหม่ไปเก่า"""
     user_id = get_user_id_from_request()
     if not user_id:
         return jsonify({"error": "unauthorized"}), 401
@@ -421,6 +466,7 @@ def get_wishlist():
                 SELECT
                     p.Product_ID,
                     p.Product_Name,
+                    p.Type,
                     p.Category,
                     MIN(pv.Price) AS Price,
                     MIN(img.Image_URL) AS Image_URL

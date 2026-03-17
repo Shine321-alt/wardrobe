@@ -1,0 +1,181 @@
+/* ============================================
+   CategoryPage.css
+   ============================================ */
+
+.category-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+/* Header */
+.category-header {
+    margin-bottom: 2rem;
+}
+
+.category-breadcrumb {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem;
+}
+
+.category-title {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 0.25rem;
+}
+
+.category-count {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Loading */
+.category-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+}
+
+/* Empty */
+.category-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 5rem 1rem;
+    text-align: center;
+}
+
+.category-empty p {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.category-shop-btn {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.category-shop-btn:hover {
+    opacity: 0.5;
+}
+
+/* Grid */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .category-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Card wrapper */
+.category-card {
+    position: relative;
+    display: block;
+    color: inherit;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.category-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Link ครอบรูป + info */
+.category-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Heart button */
+.category-heart {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.category-heart:hover {
+    background: #fff;
+}
+
+/* Image */
+.category-card-image {
+    background-color: #EEEEEE;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+}
+
+.category-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover .category-card-image img {
+    transform: scale(1.05);
+}
+
+/* Info */
+.category-card-info {
+    padding: 0.6rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.category-card-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.category-card-category {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.category-card-price {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0;
+}
