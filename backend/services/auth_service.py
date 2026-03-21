@@ -96,7 +96,7 @@ def create_reset_token(email):
             conn.commit()
 
             # ส่ง reset link กลับ
-            return f"http://localhost:5173/reset-password/{token}"
+            return f"{FRONTEND_URL}/reset-password/{token}"
 
     finally:
         conn.close()
