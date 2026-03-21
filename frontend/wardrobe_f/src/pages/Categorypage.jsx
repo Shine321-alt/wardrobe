@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import CategoryCard from '../components/Category/CategoryCard'
+import CategoryCard from '../components/Category/Categorycard'
 import '../styles/CategoryPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'

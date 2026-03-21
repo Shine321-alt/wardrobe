@@ -1,3 +1,5 @@
+import os
+
 import pymysql
 import secrets
 import bcrypt
@@ -5,7 +7,7 @@ from datetime import datetime, timedelta
 
 from utils.db import get_db_connection
 from services.user_service import create_user
-
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # ==========================================
 # Authenticate user (Login)
