@@ -12,6 +12,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import MenPage from './pages/MenPage'
 import CartPage from './pages/CartPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import MyPurchase from './pages/MyPurchase'
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">
@@ -48,7 +49,11 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route path="/cart" element={<CartPage />} />
-
+          <Route path="/settings/my-purchases" element={<MyPurchase />} />
+          <Route path="/settings/account-details" element={<ComingSoon label="Account Details" />} />
+          <Route path="/settings/payment-methods" element={<ComingSoon label="Payment Methods" />} />
+          <Route path="/settings/shipping-address" element={<ComingSoon label="Shipping Address" />} />
+          
         </Route>
       </Route>
 
