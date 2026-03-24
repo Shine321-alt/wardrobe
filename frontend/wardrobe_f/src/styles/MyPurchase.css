@@ -1,0 +1,273 @@
+/**
+ * MyPurchase Page Styles
+ * Design Philosophy: Clean, minimal styling with semantic HTML
+ * - Uses Tailwind CSS utility classes for styling
+ * - Maintains consistent spacing and typography
+ * - Responsive layout that adapts to different screen sizes
+ */
+
+/* Base Layout */
+.my-purchase-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 256px;
+  background-color: white;
+  border-right: 1px solid #e5e7eb;
+  padding: 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 32px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #374151;
+}
+
+.sidebar-item:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-item.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.content-wrapper {
+  max-width: 56rem;
+  width: 100%;
+}
+
+/* Page Header */
+.page-header {
+  font-size: 30px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+/* Description Box */
+.description-box {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.description-box p {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+/* Order Count */
+.order-count {
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+/* Order Card */
+.order-card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.order-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.details-button {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.details-button:hover {
+  background-color: #f9fafb;
+}
+
+/* Order Information */
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.order-info-item {
+  display: flex;
+  gap: 8px;
+}
+
+.order-info-label {
+  font-weight: 500;
+  color: #111827;
+  min-width: 150px;
+}
+
+.order-info-value {
+  color: #374151;
+}
+
+.tracking-link {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+}
+
+.tracking-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+    padding: 16px;
+  }
+
+  .main-content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-purchase-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px;
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .sidebar-item {
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .page-header {
+    font-size: 24px;
+  }
+
+  .order-card-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .details-button {
+    align-self: flex-start;
+  }
+
+  .order-info-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .order-info-label {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px;
+  }
+
+  .page-header {
+    font-size: 20px;
+  }
+
+  .description-box {
+    padding: 16px;
+  }
+
+  .order-card {
+    padding: 16px;
+  }
+
+  .order-card-title {
+    font-size: 16px;
+  }
+
+  .sidebar-item {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
