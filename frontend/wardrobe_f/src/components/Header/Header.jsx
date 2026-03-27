@@ -77,9 +77,9 @@ export default function Header() {
               onMouseEnter={() => setShowUserMenu(true)}  // hover → เปิด dropdown
               onMouseLeave={() => setShowUserMenu(false)} // ออก → ปิด dropdown
             >
-              <button className="icon-btn">
+              <Link to="/settings" className="icon-btn">
                 <User size={17} />
-              </button>
+              </Link>
               {showUserMenu && (
                 <UserDropdown onClose={() => setShowUserMenu(false)} />
               )}

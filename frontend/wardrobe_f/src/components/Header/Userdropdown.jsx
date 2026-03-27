@@ -17,7 +17,7 @@ export default function UserDropdown({ onClose }) {
         <div className="user-dropdown">
 
             {/* ไปหน้า My Account */}
-            <Link to="/settings/account-details" className="user-dropdown-item" onClick={onClose}>
+            <Link to="/settings" className="user-dropdown-item" onClick={onClose}>
                 My Account
             </Link>
 

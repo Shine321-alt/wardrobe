@@ -1,0 +1,491 @@
+/* SettingsPage.css */
+
+.settings-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem 2rem;
+  display: flex;
+  gap: 4rem;
+  min-height: 80vh;
+  align-items: flex-start;
+}
+
+/* ── Sidebar ── */
+.settings-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.settings-sidebar-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 2rem;
+}
+
+.settings-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #000;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+  width: 100%;
+}
+
+.settings-nav-item:hover { color: #D21312; }
+.settings-nav-item.active { color: #D21312; font-weight: 600; }
+
+.settings-nav-item svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+
+/* ── Content panel ── */
+.settings-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Account Details ── */
+.settings-content-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 1.75rem;
+}
+
+.settings-info-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.settings-info-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #000;
+  min-width: 100px;
+}
+
+.settings-info-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #000;
+}
+
+.settings-password-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.settings-password-dots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.settings-password-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #000;
+  display: inline-block;
+}
+
+.settings-edit-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: auto;
+}
+
+.settings-edit-link:hover { color: #D21312; }
+
+.settings-info-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #000;
+  max-width: 502px;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Form ── */
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.settings-input-wrap {
+  position: relative;
+  width: 440px;
+}
+
+.settings-input {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #000;
+  border-radius: 12px;
+  padding: 0 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #757575;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.settings-input:focus {
+  border-color: #000;
+  color: #000;
+}
+
+.settings-input.error {
+  border-color: #D21312;
+}
+
+.settings-input-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #757575;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.settings-error-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #D21312;
+  margin-top: 2px;
+  padding-left: 4px;
+}
+
+/* ── Two-col row (MM/YY + CVV) ── */
+.settings-input-row {
+  display: flex;
+  gap: 0.65rem;
+  width: 440px;
+}
+
+.settings-input-row .settings-input-wrap {
+  flex: 1;
+  width: auto;
+}
+
+/* ── Checkbox ── */
+.settings-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 440px;
+  margin-top: 0.25rem;
+}
+
+.settings-checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #000;
+  border-radius: 3px;
+  cursor: pointer;
+  accent-color: #000;
+}
+
+.settings-checkbox-row label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #000;
+  cursor: pointer;
+}
+
+/* ── Divider ── */
+.settings-divider {
+  width: 440px;
+  height: 1px;
+  background: #D9D9D9;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+/* ── Buttons ── */
+.settings-save-btn {
+  width: 360px;
+  height: 60px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin: 1.5rem auto 0 auto;
+  transition: background 0.2s;
+}
+
+.settings-save-btn:hover { background: #222; }
+
+.settings-save-btn.full {
+  width: 440px;
+  margin-left: 0;
+}
+
+/* ── Shipping Address empty state ── */
+.settings-empty-state {
+  max-width: 400px;
+}
+
+.settings-empty-state p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #000;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.settings-add-btn {
+  height: 48px;
+  padding: 0 2rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  transition: background 0.2s;
+}
+
+.settings-add-btn:hover { background: #222; }
+
+/* ── My Orders ── */
+.settings-orders-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.settings-orders-header {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.settings-orders-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 0.65rem;
+}
+
+.settings-orders-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #000;
+  line-height: 1.6;
+  max-width: 540px;
+  margin-bottom: 0.75rem;
+}
+
+.settings-orders-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #000;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.settings-order-item {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.settings-order-item:last-child {
+  border-bottom: none;
+}
+
+.settings-order-info {
+  flex: 1;
+}
+
+.settings-order-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+.settings-order-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #000;
+  line-height: 1.7;
+}
+
+.settings-order-meta a {
+  color: #000;
+  font-weight: 500;
+}
+
+.settings-order-meta a:hover { color: #D21312; }
+
+.settings-details-btn {
+  height: 38px;
+  padding: 0 1.25rem;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.settings-details-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* ── Order Detail Page ── */
+.order-detail-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem 2rem;
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+.order-detail-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-detail-content h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 1.5rem;
+}
+
+.order-detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.order-detail-section h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.order-detail-section p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #000;
+  line-height: 1.7;
+}
+
+.order-detail-section a {
+  color: #000;
+  font-weight: 500;
+}
+
+.order-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-bottom: 1.5rem;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.order-detail-back:hover { color: #D21312; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .settings-page,
+  .order-detail-page {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem 1rem 3rem 1rem;
+  }
+
+  .settings-sidebar { width: 100%; }
+
+  .settings-sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .settings-input-wrap,
+  .settings-divider,
+  .settings-input-row,
+  .settings-checkbox-row,
+  .settings-save-btn.full {
+    width: 100%;
+  }
+
+  .settings-save-btn {
+    width: 100%;
+  }
+}
