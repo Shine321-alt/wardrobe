@@ -72,3 +72,13 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.product-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+}

@@ -4,7 +4,9 @@ import ProductGallery from '../components/Product/ProductGallery'
 import ProductInfo from '../components/Product/ProductInfo'
 import '../styles/ProductPage.css'
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
+import { useCart } from "../context/CartContext"
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
 
@@ -16,6 +18,10 @@ export default function ProductPage() {
 
     const [selectedColorId, setSelectedColorId] = useState(null)
     const [selectedSizeId, setSelectedSizeId] = useState(null)
+
+    const navigate = useNavigate()
+    const { user } = useAuth()
+    const { addToCart } = useCart()
 
     // ✅ fetch ครั้งเดียวได้ทุกอย่าง
     useEffect(() => {
@@ -46,7 +52,7 @@ export default function ProductPage() {
             .then(res => setGallery(res.data))
     }, [id, selectedColorId])
 
-    if (!product) return <p>Loading...</p>
+    if (!product) return <p className="product-loading">Loading...</p>
 
     // หา colors และ sizes จาก product ที่โหลดมาแล้ว (ไม่ fetch ใหม่)
     const colors = product.colors
@@ -64,6 +70,18 @@ export default function ProductPage() {
         if (firstSize) setSelectedSizeId(firstSize.Size_ID)
     }
 
+    // หา Variant_ID ที่ตรง color + size ที่เลือก
+    const selectedVariant = selectedColor?.sizes.find(s => s.Size_ID === selectedSizeId)
+ 
+    const handleAddToCart = () => {
+        if (!user) {
+            navigate('/login')
+            return
+        }
+        if (!selectedVariant?.Variant_ID) return
+        addToCart(selectedVariant.Variant_ID, 1)
+    }
+
     return (
         <div>
             <Announcement_Bar />
@@ -78,6 +96,7 @@ export default function ProductPage() {
                     selectedSize={selectedSize}
                     setSelectedColorId={handleColorChange}
                     setSelectedSizeId={setSelectedSizeId}
+                    onAddToCart={handleAddToCart}
                 />
             </div>
         </div>

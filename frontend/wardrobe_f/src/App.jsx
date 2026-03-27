@@ -6,7 +6,7 @@ import './styles/ComingSoon.css'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import WishlistPage from './pages/WishlistPage'
-
+import CategoryPage from './pages/Categorypage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import MenPage from './pages/MenPage'
@@ -44,6 +44,7 @@ export default function App() {
         <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
         <Route path="/product/:id" element={<Productpage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/:type/:category" element={<CategoryPage />} />
       </Route>
 
       {/* Protected pages — ต้อง login */}

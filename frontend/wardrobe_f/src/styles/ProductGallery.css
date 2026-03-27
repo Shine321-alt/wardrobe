@@ -73,3 +73,15 @@
 .gallery-btn--next:hover {
   background-color: #f3f4f6;
 }
+
+.gallery-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 4;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}

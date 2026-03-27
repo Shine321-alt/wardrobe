@@ -1,3 +1,5 @@
+import os
+
 import pymysql
 import secrets
 import bcrypt
@@ -5,7 +7,6 @@ from datetime import datetime, timedelta
 
 from utils.db import get_db_connection
 from services.user_service import create_user
-
 
 # ==========================================
 # Authenticate user (Login)
@@ -94,7 +95,7 @@ def create_reset_token(email):
             conn.commit()
 
             # ส่ง reset link กลับ
-            return f"http://localhost:5173/reset-password/{token}"
+            return f"https://wardrobe-backend-fj3r.onrender.com/reset-password/{token}"
 
     finally:
         conn.close()

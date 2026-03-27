@@ -5,12 +5,13 @@ import axios from "axios";
   สร้าง instance ของ axios
   เพื่อกำหนดค่ากลางที่ทุก API จะใช้ร่วมกัน
 */
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const api = axios.create({
 
   // baseURL คือ URL หลักของ backend server พร้อม /api prefix
   // เวลาที่เราเรียก api.post("/login") จริง ๆ จะกลายเป็น
   // http://localhost:5000/api/login
-  baseURL: "http://localhost:5000/api",
+  baseURL: `${API_URL}/api`,
 
   /*
     withCredentials: true

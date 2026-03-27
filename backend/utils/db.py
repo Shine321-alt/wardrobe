@@ -5,15 +5,15 @@ import json
 import os
 import pymysql
 from mysql.connector import connect, Error
-
+from pymysql.cursors import DictCursor
 
 DB_CONFIG = {
-    'host': os.getenv('MYSQL_HOST', 'ballast.proxy.rlwy.net'),
-    'port': int(os.getenv('MYSQL_PORT', '58189')),
-    'user': os.getenv('MYSQL_USER', 'root'),
-    'password': os.getenv('MYSQL_PASSWORD', 'WwPUUjhdUgqxIBxwqhDdwSxTYcShwuVR'),
-    'database': os.getenv('MYSQL_DB', 'Ecommerce'),
-    'cursorclass': pymysql.cursors.DictCursor,
+    'host': os.getenv('MYSQL_HOST'),
+    'port': int(os.getenv('MYSQL_PORT')),
+    'user': os.getenv('MYSQL_USER'),
+    'password': os.getenv('MYSQL_PASSWORD'),
+    'database': os.getenv('MYSQL_DB'),
+    'cursorclass': DictCursor,
     'charset': 'utf8mb4'
 }
 

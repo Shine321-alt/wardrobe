@@ -8,3 +8,13 @@
   align-items: start;        /* ต้องมี */
   min-height: 100vh;         /* เพิ่ม */
 }
+
+.product-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+}
