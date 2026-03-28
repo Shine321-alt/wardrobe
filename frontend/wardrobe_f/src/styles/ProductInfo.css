@@ -1,7 +1,7 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;       
   padding: 1rem 0;
 }
 
@@ -52,4 +52,17 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
+}
+
+.Title h1 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.Title p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }

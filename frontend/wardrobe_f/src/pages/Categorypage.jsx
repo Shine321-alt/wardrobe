@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 // แปลง slug → ชื่อจริง เช่น "t-shirts" → "T-Shirts"
 const slugToLabel = (slug) =>
-    slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+    slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
 
 // mapping พิเศษสำหรับ slug ที่มีอักขระพิเศษ เช่น &
 const slugMap = {

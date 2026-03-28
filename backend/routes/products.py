@@ -500,11 +500,11 @@ def fetch_user_orders_list():
             sql = """
                 SELECT 
                     Order_ID as id, 
-                    Created_At as date, 
+                    CreatedAt as date, 
                     Status as status
-                FROM orders 
-                WHERE User_ID = %s AND Status != 'Cart'
-                ORDER BY Created_At DESC
+                FROM Buyorder 
+                WHERE User_ID = %s 
+                ORDER BY CreatedAt DESC
             """
             cur.execute(sql, (user_id,)) # ส่ง user_id เข้าไปตรงนี้
             results = cur.fetchall()

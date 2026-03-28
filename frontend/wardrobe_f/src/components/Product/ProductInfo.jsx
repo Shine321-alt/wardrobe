@@ -19,7 +19,7 @@ export default function ProductInfo({
             <div className="Title">
                 <h1>{product.Product_Name}</h1>
                 <p>{product.Type} — {product.Category}</p>
-                <p>${selectedSize?.Price}</p>
+                <p>${selectedSize?.Price} </p>
             </div>
 
             <ProductColors
