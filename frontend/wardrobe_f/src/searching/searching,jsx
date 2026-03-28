@@ -1,0 +1,22 @@
+import React, { useState, useEffect } from "react";
+import "./SearchBar.css";
+import { searchProducts } from "../api/productApi";
+import ProductCard from "./ProductCard";
+
+const SearchBar = () => {
+  const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+  const delay = setTimeout(async () => {
+    try {
+      const data = await searchProducts(query);
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setProducts([]);
+    }
+  }, 400);
+
+  return () => clearTimeout(delay);
+}, [query]);
