@@ -11,6 +11,7 @@ from services.user_service import create_user
 # ==========================================
 # Authenticate user (Login)
 # ==========================================
+FRONTEND_BASE_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 def authenticate_user(identifier, password):
 
     conn = get_db_connection()
@@ -95,7 +96,7 @@ def create_reset_token(email):
             conn.commit()
 
             # ส่ง reset link กลับ
-            return f"https://wardrobe-backend-fj3r.onrender.com/reset-password/{token}"
+            return f"{FRONTEND_BASE_URL}/reset-password/{token}"
 
     finally:
         conn.close()
