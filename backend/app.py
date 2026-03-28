@@ -7,9 +7,11 @@ from flask_cors import CORS
 from routes.products import products_bp
 from routes.auth import auth_bp
 from routes.cart import cart_bp
-from routes.catalog import catalog_bp  
+from routes.catalog import catalog_bp
+from routes.shipping import shipping_bp      # ← import shipping blueprint
 from routes.user import user_bp
 from routes.cards import cards_bp
+
 
 app = Flask(__name__)
 
@@ -21,15 +23,15 @@ FRONTEND_URL = os.environ.get(
 # ===============================
 # ตั้งค่า CORS
 # ===============================
-# ต้องตั้ง credentials=True เพื่อให้ cookie ส่งไปได้
-# และ origins เพื่อ allow frontend ที่ http://localhost:5173
 CORS(
     app,
     origins=[FRONTEND_URL],
     supports_credentials=True
 )
 
+# ===============================
 # Register blueprints
+
 app.register_blueprint(products_bp, url_prefix='/api')
 # routes login
 app.register_blueprint(auth_bp, url_prefix="/api")
@@ -40,7 +42,9 @@ app.register_blueprint(catalog_bp, url_prefix="/api")
 # routes user profile
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(cards_bp, url_prefix="/api")
+app.register_blueprint(shipping_bp, url_prefix="/api") 
 # routes orders
+
 
 
 @app.route('/', methods=['GET'])
@@ -49,7 +53,7 @@ def home():
         "message": "Wardrobe API",
         "endpoints": {
             "products": "/api/products",
-            "collections": "/api/collections",
+            "shipping": "/api/shipping",
             "health": "/health"
         }
     })
@@ -57,7 +61,6 @@ def home():
 @app.route('/health', methods=['GET'])
 def health():
     return {'status': 'OK'}
-
 
 
 if __name__ == "__main__":

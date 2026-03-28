@@ -105,7 +105,7 @@ export default function MyPurchasesTab() {
             </div>
           ))
         ) : (
-          <div className="text-center py-10">
+          <div className="settings-orders-empty">
             <p>You haven't made any purchases yet.</p>
           </div>
         )}
