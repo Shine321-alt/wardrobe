@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../styles/CartPage.css';
 
@@ -27,7 +27,6 @@ const MinusIcon = () => (
 const CartItem = ({ item, onRemove, onUpdateQty }) => {
   return (
     <div className="cart-item">
-      {/* รูปสินค้า */}
       <div className="cart-item__image">
         {item.Image_URL ? (
           <img src={item.Image_URL} alt={item.Product_Name} />
@@ -36,9 +35,7 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
         )}
       </div>
 
-      {/* รายละเอียด */}
       <div className="cart-item__details">
-        {/* แถวบน: ชื่อ + ราคา */}
         <div className="cart-item__top">
           <div className="cart-item__info">
             <h3 className="cart-item__name">{item.Product_Name}</h3>
@@ -51,9 +48,7 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
           </span>
         </div>
 
-        {/* แถวล่าง: Actions */}
         <div className="cart-item__actions">
-          {/* ลบ */}
           <button
             className="cart-item__btn"
             onClick={() => onRemove(item.Cart_ID)}
@@ -62,7 +57,6 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
             <TrashIcon />
           </button>
 
-          {/* ปรับจำนวน */}
           <div className="cart-item__qty">
             <button
               className="cart-item__btn"
@@ -89,6 +83,7 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
 
 // ── CartPage ───────────────────────────────────────────────────────────────────
 const CartPage = () => {
+  const navigate = useNavigate();
   const { cart, totalItems, totalPrice, loading, removeFromCart, updateQuantity } = useCart();
 
   if (loading) {
@@ -103,7 +98,6 @@ const CartPage = () => {
     <div className="cart-page">
       <div className="cart-page__inner">
 
-        {/* ── ฝั่งซ้าย: รายการสินค้า ── */}
         <div className="cart-page__left">
           <h1 className="cart-page__title">Bag</h1>
 
@@ -126,7 +120,6 @@ const CartPage = () => {
           )}
         </div>
 
-        {/* ── ฝั่งขวา: Order Summary ── */}
         <div className="cart-page__right">
           <h2 className="cart-summary__title">Order Summary</h2>
 
@@ -145,9 +138,11 @@ const CartPage = () => {
             <span>${Number(totalPrice).toFixed(2)}</span>
           </div>
 
+          {/* ── CheckOut button → ไปหน้า Checkout ── */}
           <button
             className="cart-checkout-btn"
             disabled={!cart || cart.length === 0}
+            onClick={() => navigate('/checkout')}
           >
             CheckOut
           </button>
