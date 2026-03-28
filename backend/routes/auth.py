@@ -62,8 +62,8 @@ def login():
         "token",
         token,
         httponly=True,   # ป้องกัน JS access
-        samesite="Lax",
-        secure=False     # dev mode (production ต้อง True)
+        samesite="None",
+        secure=True     # dev mode (production ต้อง True)
     )
 
     return response
@@ -110,8 +110,8 @@ def logout():
         "",
         max_age=0,
         httponly=True,
-        samesite="Lax",
-        secure=False
+        samesite="None",
+        secure=True
     )
 
     return response
