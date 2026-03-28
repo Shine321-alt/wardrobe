@@ -9,7 +9,7 @@ def create_buyorder(user_id, delivery_data, card_data):
     """
     ขั้นตอน:
     1. หา Order ที่เป็น Status='Cart' ของ user
-    2. บันทึกข้อมูลลง BuyOrder
+    2. บันทึกข้อมูลลง BuyOrder (แยกกรณีมีบัตร/ไม่มีบัตร)
     3. เปลี่ยน Status ของ orders จาก 'Cart' → 'Pending'
     4. บันทึก card ลง payment_card ถ้า save_card=True
 
@@ -21,6 +21,7 @@ def create_buyorder(user_id, delivery_data, card_data):
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
+
             # ── 1. หา Cart order ของ user ──────────────────────────────────
             cur.execute("""
                 SELECT Order_ID, Total_Price
@@ -31,39 +32,68 @@ def create_buyorder(user_id, delivery_data, card_data):
             order = cur.fetchone()
 
             if not order:
-                return None   # ไม่มี cart → frontend ควร redirect ไป /cart
+                return None  # ไม่มี cart → frontend ควร redirect ไป /cart
 
             order_id    = order['Order_ID']
             total_price = order['Total_Price']
 
+            has_card = bool(card_data.get('cardnumber'))
+
             # ── 2. INSERT ลง BuyOrder ─────────────────────────────────────
-            cur.execute("""
-                INSERT INTO BuyOrder (
-                    Firstname, Lastname, Address_Desc,
-                    Town, Postcode, Country, Phonenumber,
-                    Order_ID, Cardnumber, Expired, CVV,
-                    User_ID, Status
-                ) VALUES (
-                    %s, %s, %s,
-                    %s, %s, %s, %s,
-                    %s, %s, %s, %s,
-                    %s, %s
-                )
-            """, (
-                delivery_data.get('firstname', ''),
-                delivery_data.get('lastname', ''),
-                delivery_data.get('address_desc', ''),
-                delivery_data.get('town', ''),
-                delivery_data.get('postcode', ''),
-                delivery_data.get('country', ''),
-                delivery_data.get('phonenumber', ''),
-                order_id,
-                card_data.get('cardnumber', ''),
-                card_data.get('expired', ''),
-                card_data.get('cvv', ''),
-                user_id,
-                'Pending'
-            ))
+            if has_card:
+                # กรณีมีบัตร → INSERT พร้อม Cardnumber, Expired, CVV
+                cur.execute("""
+                    INSERT INTO BuyOrder (
+                        Firstname, Lastname, Address_Desc,
+                        Town, Postcode, Country, Phonenumber,
+                        Order_ID, Cardnumber, Expired, CVV,
+                        User_ID, Status
+                    ) VALUES (
+                        %s, %s, %s,
+                        %s, %s, %s, %s,
+                        %s, %s, %s, %s,
+                        %s, %s
+                    )
+                """, (
+                    delivery_data.get('firstname', ''),
+                    delivery_data.get('lastname', ''),
+                    delivery_data.get('address_desc', ''),
+                    delivery_data.get('town', ''),
+                    delivery_data.get('postcode', ''),
+                    delivery_data.get('country', ''),
+                    delivery_data.get('phonenumber', ''),
+                    order_id,
+                    card_data.get('cardnumber') or None,
+                    card_data.get('expired') or None,
+                    card_data.get('cvv') or None,
+                    user_id,
+                    'Pending'
+                ))
+            else:
+                # กรณีไม่มีบัตร → INSERT โดยไม่ใส่ Cardnumber, Expired, CVV
+                cur.execute("""
+                    INSERT INTO BuyOrder (
+                        Firstname, Lastname, Address_Desc,
+                        Town, Postcode, Country, Phonenumber,
+                        Order_ID, User_ID, Status
+                    ) VALUES (
+                        %s, %s, %s,
+                        %s, %s, %s, %s,
+                        %s, %s, %s
+                    )
+                """, (
+                    delivery_data.get('firstname', ''),
+                    delivery_data.get('lastname', ''),
+                    delivery_data.get('address_desc', ''),
+                    delivery_data.get('town', ''),
+                    delivery_data.get('postcode', ''),
+                    delivery_data.get('country', ''),
+                    delivery_data.get('phonenumber', ''),
+                    order_id,
+                    user_id,
+                    'Pending'
+                ))
+
             bos_id = cur.lastrowid
 
             # ── 3. เปลี่ยน Status orders → 'Pending' ─────────────────────
@@ -74,7 +104,7 @@ def create_buyorder(user_id, delivery_data, card_data):
             """, (order_id,))
 
             # ── 4. Save card ถ้า user เลือก ───────────────────────────────
-            if card_data.get('save_card') and card_data.get('cardnumber'):
+            if has_card and card_data.get('save_card'):
                 # เช็ค duplicate ก่อน
                 cur.execute("""
                     SELECT Card_ID FROM payment_card
