@@ -1,0 +1,158 @@
+/* ============================================
+   OrderDetailPage.css
+   ============================================ */
+
+/* ── Layout ── */
+.order-detail-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem 2rem;
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+}
+
+.order-detail-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Back button ── */
+.order-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    background: none;
+    border: none;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.order-detail-back:hover {
+    color: #D21312;
+}
+
+/* ── Title ── */
+.order-detail-content h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Section ── */
+.order-detail-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-detail-section:last-of-type {
+    border-bottom: none;
+}
+
+.order-detail-section h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #000;
+}
+
+.order-detail-section p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #000;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ── Items ── */
+.order-detail-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-detail-item:last-child {
+    border-bottom: none;
+}
+
+.order-detail-item-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #f3f4f6;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.order-detail-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #000;
+}
+
+.order-detail-item-info p {
+    margin: 0;
+}
+
+/* ── Totals ── */
+.order-detail-totals {
+    margin-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.order-detail-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #000;
+}
+
+.order-detail-grand {
+    border-top: 1px solid #000;
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* ── Loading / Error ── */
+.order-detail-loading,
+.order-detail-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.order-detail-error {
+    color: #D21312;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .order-detail-page {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem 1rem 3rem 1rem;
+    }
+}
