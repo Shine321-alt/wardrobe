@@ -9,14 +9,17 @@ def create_buyorder(user_id, delivery_data, card_data):
     """
     ขั้นตอน:
     1. หา Order ที่เป็น Status='Cart' ของ user
-    2. บันทึกข้อมูลลง BuyOrder (แยกกรณีมีบัตร/ไม่มีบัตร)
-    3. เปลี่ยน Status ของ orders จาก 'Cart' → 'Pending'
-    4. บันทึก card ลง payment_card ถ้า save_card=True
+    2. ตรวจสอบ stock ว่าเพียงพอทุก item ก่อน
+    3. บันทึกข้อมูลลง BuyOrder (แยกกรณีมีบัตร/ไม่มีบัตร)
+    4. เปลี่ยน Status ของ orders จาก 'Cart' → 'Pending'
+    5. ลด Stock ใน product_variants ตาม quantity ที่สั่ง
+    6. บันทึก card ลง payment_card ถ้า save_card=True
 
     Returns:
         dict { 'bos_id': int, 'order_id': int }  — สำเร็จ
         None  — ไม่พบ Cart order
-        raises Exception  — เกิด error ใน DB
+        raises ValueError  — stock ไม่พอ
+        raises Exception   — เกิด error ใน DB
     """
     conn = get_db_connection()
     try:
@@ -37,11 +40,41 @@ def create_buyorder(user_id, delivery_data, card_data):
             order_id    = order['Order_ID']
             total_price = order['Total_Price']
 
+            # ── 2. ดึง items และตรวจสอบ stock ────────────────────────────
+            cur.execute("""
+                SELECT
+                    oi.Order_Item_ID,
+                    oi.Variant_ID,
+                    oi.Quantity,
+                    pv.Stock,
+                    p.Product_Name,
+                    s.Size_Name
+                FROM order_items oi
+                JOIN product_variants pv ON oi.Variant_ID = pv.Variant_ID
+                JOIN products p ON pv.Product_ID = p.Product_ID
+                JOIN sizes s ON pv.Size_ID = s.Size_ID
+                WHERE oi.Order_ID = %s
+            """, (order_id,))
+            items = cur.fetchall()
+
+            # ตรวจสอบว่า stock พอทุก item
+            out_of_stock = []
+            for item in items:
+                if item['Quantity'] > item['Stock']:
+                    out_of_stock.append(
+                        f"{item['Product_Name']} (Size {item['Size_Name']}): "
+                        f"requested {item['Quantity']}, available {item['Stock']}"
+                    )
+
+            if out_of_stock:
+                raise ValueError(
+                    "Insufficient stock for: " + "; ".join(out_of_stock)
+                )
+
             has_card = bool(card_data.get('cardnumber'))
 
-            # ── 2. INSERT ลง BuyOrder ─────────────────────────────────────
+            # ── 3. INSERT ลง BuyOrder ─────────────────────────────────────
             if has_card:
-                # กรณีมีบัตร → INSERT พร้อม Cardnumber, Expired, CVV
                 cur.execute("""
                     INSERT INTO BuyOrder (
                         Firstname, Lastname, Address_Desc,
@@ -70,7 +103,6 @@ def create_buyorder(user_id, delivery_data, card_data):
                     'Pending'
                 ))
             else:
-                # กรณีไม่มีบัตร → INSERT โดยไม่ใส่ Cardnumber, Expired, CVV
                 cur.execute("""
                     INSERT INTO BuyOrder (
                         Firstname, Lastname, Address_Desc,
@@ -96,16 +128,23 @@ def create_buyorder(user_id, delivery_data, card_data):
 
             bos_id = cur.lastrowid
 
-            # ── 3. เปลี่ยน Status orders → 'Pending' ─────────────────────
+            # ── 4. เปลี่ยน Status orders → 'Pending' ─────────────────────
             cur.execute("""
                 UPDATE orders
                 SET Status = 'Pending'
                 WHERE Order_ID = %s
             """, (order_id,))
 
-            # ── 4. Save card ถ้า user เลือก ───────────────────────────────
+            # ── 5. ลด Stock ใน product_variants ──────────────────────────
+            for item in items:
+                cur.execute("""
+                    UPDATE product_variants
+                    SET Stock = Stock - %s
+                    WHERE Variant_ID = %s
+                """, (item['Quantity'], item['Variant_ID']))
+
+            # ── 6. Save card ถ้า user เลือก ───────────────────────────────
             if has_card and card_data.get('save_card'):
-                # เช็ค duplicate ก่อน
                 cur.execute("""
                     SELECT Card_ID FROM payment_card
                     WHERE Cardnumber = %s AND User_ID = %s
@@ -116,7 +155,7 @@ def create_buyorder(user_id, delivery_data, card_data):
                         INSERT INTO payment_card (Fullname, Cardnumber, Expiry_date, CVV, User_ID)
                         VALUES (%s, %s, %s, %s, %s)
                     """, (
-                        f"{delivery_data.get('firstname','')} {delivery_data.get('lastname','')}".strip(),
+                        f"{delivery_data.get('firstname','')} {delivery_data.get('lastname','')}" .strip(),
                         card_data['cardnumber'],
                         card_data['expired'],
                         card_data['cvv'],
@@ -126,6 +165,9 @@ def create_buyorder(user_id, delivery_data, card_data):
         conn.commit()
         return {'bos_id': bos_id, 'order_id': order_id}
 
+    except ValueError:
+        conn.rollback()
+        raise
     except Exception as e:
         conn.rollback()
         print(f"[checkout_service] Error: {e}")

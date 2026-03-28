@@ -24,7 +24,6 @@ def get_user_id_from_request():
 
 # ─────────────────────────────────────────────────────────────────────────────
 # POST /api/checkout
-# รับข้อมูล delivery + card จาก PaymentPage แล้วสร้าง BuyOrder
 # ─────────────────────────────────────────────────────────────────────────────
 @checkout_bp.route('/checkout', methods=['POST'])
 def place_order():
@@ -34,7 +33,6 @@ def place_order():
 
     data = request.get_json() or {}
 
-    # ── ข้อมูลที่อยู่จัดส่ง ──
     delivery_data = {
         'firstname':    data.get('firstname', '').strip(),
         'lastname':     data.get('lastname', '').strip(),
@@ -45,7 +43,6 @@ def place_order():
         'phonenumber':  data.get('phonenumber', '').strip(),
     }
 
-    # ── ข้อมูลบัตร ──
     card_data = {
         'cardnumber': data.get('cardnumber', '').replace(' ', ''),
         'expired':    data.get('expired', ''),
@@ -53,7 +50,6 @@ def place_order():
         'save_card':  data.get('save_card', False),
     }
 
-    # ── Validate ──
     required_delivery = ['firstname', 'lastname', 'address_desc', 'town', 'postcode', 'country', 'phonenumber']
     missing = [k for k in required_delivery if not delivery_data[k]]
     if missing:
@@ -71,6 +67,10 @@ def place_order():
             'bos_id':   result['bos_id'],
         }), 201
 
+    except ValueError as e:
+        # stock ไม่เพียงพอ
+        return jsonify({'message': str(e)}), 409
+
     except Exception as e:
         print(f'[POST /checkout] Error: {e}')
         return jsonify({'message': 'Failed to place order. Please try again.'}), 500
@@ -78,7 +78,6 @@ def place_order():
 
 # ─────────────────────────────────────────────────────────────────────────────
 # GET /api/orders
-# ดึง order ทั้งหมดของ user สำหรับ MyPurchasesTab
 # ─────────────────────────────────────────────────────────────────────────────
 @checkout_bp.route('/orders', methods=['GET'])
 def get_orders():
