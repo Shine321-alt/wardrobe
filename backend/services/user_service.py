@@ -1,4 +1,5 @@
 import pymysql
+import bcrypt
 from utils.db import get_db_connection 
 
 # ==========================================
@@ -9,10 +10,13 @@ def create_user(username, email, password, role='customer'):
     
     try:
         with conn.cursor() as cur:
+            # ✅ hash password ก่อน insert
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
             cur.execute("""
                 INSERT INTO user (Username, Email, Password, Role) 
                 VALUES (%s, %s, %s, %s)
-            """, (username, email, password, role))
+            """, (username, email, hashed.decode('utf-8'), role))  # decode เป็น string ก่อนเก็บ
         conn.commit()
         return True
     except Exception as e:
