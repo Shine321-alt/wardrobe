@@ -646,3 +646,88 @@
     width: 100%;
   }
 }
+
+/* ── Address Cards ── */
+.settings-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.settings-address-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+}
+
+.settings-address-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.settings-address-card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.settings-address-card-info {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #000;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ── Order Detail Items ── */
+.order-detail-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-detail-item:last-child {
+    border-bottom: none;
+}
+
+.order-detail-item-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #f3f4f6;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.order-detail-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #000;
+}
+
+/* ── Order Totals ── */
+.order-detail-totals {
+    margin-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.order-detail-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #000;
+}
