@@ -17,6 +17,9 @@ import CartPage from './pages/CartPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
 import OrderDetailPage from './components/Settings/OrderDetailPage'
+import CheckoutPage from './pages/CheckoutPage'
+import PaymentPage from './pages/PaymentPage'
+
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">
@@ -55,6 +58,8 @@ export default function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/orders/:id" element={<OrderDetailPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout/payment" element={<PaymentPage />} />
         </Route>
       </Route>
 
