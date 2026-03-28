@@ -83,3 +83,32 @@
   width: 24px;
   background-color: #ffffff;
 }
+
+.hero--static {
+  height: auto;
+}
+
+.hero--static .hero-slide {
+  position: relative;
+  inset: unset;
+  opacity: 1;
+}
+
+.hero--static .hero-slide img {
+  width: 100%;
+  height: auto;
+  object-fit: unset;
+}
+
+/* New Page — 8 products grid */
+.new-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+}
+
+@media (min-width: 1024px) {
+  .new-product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
