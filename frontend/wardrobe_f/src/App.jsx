@@ -14,9 +14,10 @@ import WomenPage from './pages/WomenPage'
 import KidPage   from './pages/KidPage'
 import NewPage   from './pages/NewPage'
 import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
+import PaymentPage from './pages/PaymentPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
-// import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -36,7 +37,6 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-
      {/* Public pages */}
       <Route element={<Layout />}>
         <Route path="/"        element={<HomePage />} />
@@ -53,9 +53,10 @@ export default function App() {
       {/* Protected pages — ต้อง login */}
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          {/* <Route path="/settings/orders/:id" element={<MyPurchaseDetailPage />} />   */}
+          <Route path="/cart"             element={<CartPage />} />
+          <Route path="/checkout"         element={<CheckoutPage />} />
+          <Route path="/checkout/payment" element={<PaymentPage />} />
+          <Route path="/settings"         element={<SettingsPage />} />
         </Route>
       </Route>
 

@@ -8,9 +8,10 @@ from routes.products import products_bp
 from routes.auth import auth_bp
 from routes.cart import cart_bp
 from routes.catalog import catalog_bp
-from routes.shipping import shipping_bp      # ← import shipping blueprint
+from routes.shipping import shipping_bp    
 from routes.user import user_bp
 from routes.cards import cards_bp
+from routes.checkout import checkout_bp
 
 
 app = Flask(__name__)
@@ -32,18 +33,14 @@ CORS(
 # ===============================
 # Register blueprints
 
-app.register_blueprint(products_bp, url_prefix='/api')
-# routes login
-app.register_blueprint(auth_bp, url_prefix="/api")
-# routes cart
-app.register_blueprint(cart_bp, url_prefix="/api")
-# routes catalog (filter by type/category)
-app.register_blueprint(catalog_bp, url_prefix="/api")
-# routes user profile
-app.register_blueprint(user_bp, url_prefix='/api')
-app.register_blueprint(cards_bp, url_prefix="/api")
-app.register_blueprint(shipping_bp, url_prefix="/api") 
-# routes orders
+app.register_blueprint(products_bp,  url_prefix='/api')
+app.register_blueprint(auth_bp,      url_prefix='/api')
+app.register_blueprint(cart_bp,      url_prefix='/api')
+app.register_blueprint(catalog_bp,   url_prefix='/api')
+app.register_blueprint(user_bp,      url_prefix='/api')
+app.register_blueprint(cards_bp,     url_prefix='/api')
+app.register_blueprint(shipping_bp,  url_prefix='/api')
+app.register_blueprint(checkout_bp,  url_prefix='/api')
 
 
 
