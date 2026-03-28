@@ -36,3 +36,19 @@ const api = axios.create({
   import api from "./api";
 */
 export default api;
+
+// =======================
+// CARD API
+// =======================
+
+// ดึงรายการบัตรทั้งหมด
+export const getCards = async () => {
+  const res = await api.get("/cards")
+  return res.data
+}
+
+// เพิ่มบัตรใหม่
+export const addCard = async (data) => {
+  const res = await api.post("/cards", data)
+  return res.data
+}
