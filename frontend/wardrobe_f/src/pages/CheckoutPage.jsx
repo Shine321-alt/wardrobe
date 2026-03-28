@@ -1,29 +1,70 @@
-// src/pages/CheckoutPage.jsx
+// ===============================
+// Import React hooks และ library ที่จำเป็น
+// ===============================
+
+// useState = เก็บ state (form, loading, error)
+// useEffect = ใช้โหลดข้อมูล profile ตอนเปิดหน้า
 import { useState, useEffect } from 'react'
+
+// useNavigate = ใช้ redirect ไปหน้าอื่น
 import { useNavigate } from 'react-router-dom'
+
+// useCart = context สำหรับข้อมูล cart
 import { useCart } from '../context/CartContext'
+
+// axios = ใช้เรียก API
 import axios from 'axios'
 
+
+// ===============================
+// กำหนด URL ของ backend
+// ===============================
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
+
+// ===============================
+// Component: CheckoutPage
+// ===============================
 export default function CheckoutPage() {
+
+  // ใช้ redirect
   const navigate = useNavigate()
+
+  // ดึงข้อมูล cart จาก context
   const { cart, totalItems, totalPrice, loading: cartLoading } = useCart()
 
+
+  // ===============================
+  // State: ฟอร์มข้อมูลการจัดส่ง
+  // ===============================
   const [form, setForm] = useState({
     email: '', firstName: '', lastName: '',
     addressLine1: '', town: '', postcode: '',
     country: '', phone: '',
   })
+
+  // ใช้เช็คว่าโหลด profile เสร็จหรือยัง
   const [profileLoaded, setProfileLoaded] = useState(false)
+
+  // ใช้เช็คว่ากำลัง save อยู่ไหม
   const [saving, setSaving] = useState(false)
+
+  // เก็บ error ของ form
   const [errors, setErrors] = useState({})
 
-  // ── ดึงข้อมูล profile มาใส่ฟอร์มอัตโนมัติ ─────────────────────────────
+
+  // ==========================================
+  // ดึงข้อมูล profile มา auto-fill ฟอร์ม
+  // ==========================================
   useEffect(() => {
+
     axios.get(`${API_URL}/api/user/profile`, { withCredentials: true })
+
       .then(res => {
+
         const d = res.data
+
+        // set ค่า form จาก database
         setForm({
           email:        d.Email         || '',
           firstName:    d.Firstname     || '',
@@ -34,65 +75,137 @@ export default function CheckoutPage() {
           country:      d.State         || '',
           phone:        d.Phonenumber   || '',
         })
+
         setProfileLoaded(true)
       })
+
       .catch(() => setProfileLoaded(true))
+
   }, [])
 
+
+  // ==========================================
+  // handleChange: update form
+  // ==========================================
   const handleChange = e =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
+
+  // ==========================================
+  // validate form
+  // ==========================================
   const validate = () => {
-    const req = ['email', 'firstName', 'lastName', 'addressLine1', 'town', 'postcode', 'country', 'phone']
+
+    const req = [
+      'email', 'firstName', 'lastName',
+      'addressLine1', 'town', 'postcode',
+      'country', 'phone'
+    ]
+
     const errs = {}
-    req.forEach(k => { if (!form[k].trim()) errs[k] = 'Required' })
+
+    // เช็คว่าทุก field ต้องไม่ว่าง
+    req.forEach(k => {
+      if (!form[k].trim()) errs[k] = 'Required'
+    })
+
     setErrors(errs)
+
     return Object.keys(errs).length === 0
   }
 
+
+  // ==========================================
+  // handleSave: บันทึกข้อมูลก่อนไป payment
+  // ==========================================
   const handleSave = async () => {
+
+    // validate ก่อน
     if (!validate()) return
+
     setSaving(true)
+
     try {
-      // บันทึกที่อยู่ก่อน แล้วส่งข้อมูลไปหน้า Payment
+
+      // ===============================
+      // บันทึก profile ลง backend
+      // ===============================
       await axios.put(`${API_URL}/api/user/profile`, {
-        firstName:    form.firstName,
-        lastName:     form.lastName,
-        address:      form.addressLine1,
-        city:         form.town,
-        zipCode:      form.postcode,
-        state:        form.country,
-        phone:        form.phone,
+        firstName: form.firstName,
+        lastName:  form.lastName,
+        address:   form.addressLine1,
+        city:      form.town,
+        zipCode:   form.postcode,
+        state:     form.country,
+        phone:     form.phone,
       }, { withCredentials: true })
 
-      navigate('/checkout/payment', { state: { deliveryForm: form } })
+      // ===============================
+      // ไปหน้า payment พร้อมส่งข้อมูล
+      // ===============================
+      navigate('/checkout/payment', {
+        state: { deliveryForm: form }
+      })
+
     } catch {
+
       alert('Failed to save. Please try again.')
+
     } finally {
+
       setSaving(false)
     }
   }
 
+
+  // ===============================
+  // คำนวณราคา
+  // ===============================
   const shippingFee = 0
   const total = Number(totalPrice) + shippingFee
 
+
+  // ===============================
+  // Loading state
+  // ===============================
   if (cartLoading || !profileLoaded) {
-    return <div style={{ textAlign: 'center', padding: 80, color: '#888' }}>Loading...</div>
+    return (
+      <div style={{ textAlign: 'center', padding: 80, color: '#888' }}>
+        Loading...
+      </div>
+    )
   }
 
+
+  // ===============================
+  // UI หลัก
+  // ===============================
   return (
+
     <div style={styles.page}>
+
+      {/* title */}
       <h1 style={styles.pageTitle}>Checkout</h1>
 
+
       <div style={styles.layout}>
-        {/* ── LEFT: Delivery Form ── */}
+
+        {/* ===============================
+           LEFT: Delivery Form
+        =============================== */}
         <div style={styles.left}>
+
           <section style={styles.section}>
+
+            {/* header */}
             <div style={styles.sectionHeader}>
               <h2 style={styles.sectionTitle}>Delivery Options</h2>
             </div>
 
-            {/* Delivery badge */}
+
+            {/* ===============================
+               Delivery badge (icon + text)
+            =============================== */}
             <div style={styles.deliveryBadge}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="1.8">
                 <rect x="1" y="3" width="15" height="13" rx="1"/>
@@ -103,20 +216,37 @@ export default function CheckoutPage() {
               <span style={styles.deliveryText}>Delivery</span>
             </div>
 
-            {/* Form fields */}
+
+            {/* ===============================
+               Form Fields
+            =============================== */}
             <div style={styles.formGrid}>
-              <Field label="Email*"        name="email"        value={form.email}        onChange={handleChange} error={errors.email}        full />
-              <Field label="First Name*"   name="firstName"    value={form.firstName}    onChange={handleChange} error={errors.firstName} />
-              <Field label="Last Name*"    name="lastName"     value={form.lastName}     onChange={handleChange} error={errors.lastName} />
+
+              <Field label="Email*" name="email" value={form.email} onChange={handleChange} error={errors.email} full />
+
+              <Field label="First Name*" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} />
+
+              <Field label="Last Name*" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} />
+
               <Field label="Address Line 1*" name="addressLine1" value={form.addressLine1} onChange={handleChange} error={errors.addressLine1} full />
-              <Field label="Town/City*"    name="town"         value={form.town}         onChange={handleChange} error={errors.town} />
-              <Field label="Postcode*"     name="postcode"     value={form.postcode}     onChange={handleChange} error={errors.postcode} />
-              <Field label="Country/Region*" name="country"   value={form.country}      onChange={handleChange} error={errors.country} />
-              <Field label="Phone Number*" name="phone"        value={form.phone}        onChange={handleChange} error={errors.phone} type="tel" />
+
+              <Field label="Town/City*" name="town" value={form.town} onChange={handleChange} error={errors.town} />
+
+              <Field label="Postcode*" name="postcode" value={form.postcode} onChange={handleChange} error={errors.postcode} />
+
+              <Field label="Country/Region*" name="country" value={form.country} onChange={handleChange} error={errors.country} />
+
+              <Field label="Phone Number*" name="phone" value={form.phone} onChange={handleChange} error={errors.phone} type="tel" />
+
             </div>
 
-            {/* Buttons */}
+
+            {/* ===============================
+               Buttons
+            =============================== */}
             <div style={styles.btnRow}>
+
+              {/* ปุ่ม save */}
               <button
                 style={{ ...styles.btnPrimary, opacity: saving ? 0.7 : 1 }}
                 onClick={handleSave}
@@ -124,44 +254,81 @@ export default function CheckoutPage() {
               >
                 {saving ? 'Saving...' : 'Save & Continue'}
               </button>
-              <button style={styles.btnSecondary} onClick={() => navigate('/cart')}>
+
+              {/* cancel */}
+              <button
+                style={styles.btnSecondary}
+                onClick={() => navigate('/cart')}
+              >
                 Cancel
               </button>
             </div>
+
           </section>
 
-          {/* Collapsed sections */}
+
+          {/* section ถัดไป (ยังไม่เปิด) */}
           <CollapsedSection title="Payment" />
           
         </div>
 
-        {/* ── RIGHT: Order Summary ── */}
-        <OrderSummary cart={cart} totalItems={totalItems} totalPrice={total} shippingFee={shippingFee} />
+
+        {/* ===============================
+           RIGHT: Order Summary
+        =============================== */}
+        <OrderSummary
+          cart={cart}
+          totalItems={totalItems}
+          totalPrice={total}
+          shippingFee={shippingFee}
+        />
+
       </div>
     </div>
   )
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+
+// ===============================
+// Component: Field (input แต่ละช่อง)
+// ===============================
 function Field({ label, name, value, onChange, error, full, type = 'text' }) {
+
   return (
     <div style={{ gridColumn: full ? '1 / -1' : 'span 1' }}>
+
       <input
-        name={name} type={type} placeholder={label} value={value}
+        name={name}
+        type={type}
+        placeholder={label}
+        value={value}
         onChange={onChange}
+
+        // เปลี่ยนสี border ถ้ามี error
         style={{
           ...styles.input,
           borderColor: error ? '#ef4444' : '#ddd',
         }}
+
+        // focus → border ดำ
         onFocus={e => e.target.style.borderColor = '#111'}
+
+        // blur → กลับเป็นปกติ
         onBlur={e => e.target.style.borderColor = error ? '#ef4444' : '#ddd'}
       />
+
+      {/* แสดง error */}
       {error && <p style={styles.errorMsg}>{error}</p>}
     </div>
   )
 }
 
+
+// ===============================
+// Component: CollapsedSection
+// ===============================
 function CollapsedSection({ title }) {
+
   return (
     <div style={styles.collapsedSection}>
       <h3 style={styles.collapsedTitle}>{title}</h3>
@@ -169,52 +336,85 @@ function CollapsedSection({ title }) {
   )
 }
 
+
+// ===============================
+// Component: OrderSummary
+// ===============================
 export function OrderSummary({ cart, totalItems, totalPrice, shippingFee = 0 }) {
+
   return (
     <div style={styles.right}>
+
+      {/* header */}
       <div style={styles.summaryHeader}>
         <h2 style={styles.sectionTitle}>In Your Bag</h2>
       </div>
 
+      {/* subtotal */}
       <div style={styles.summaryRow}>
         <span>Subtotal</span>
         <span>${Number(totalPrice).toFixed(2)}</span>
       </div>
+
+      {/* shipping */}
       <div style={styles.summaryRow}>
         <span>Delivery</span>
-        <span style={{ color: '#16a34a' }}>{shippingFee === 0 ? '$0.00' : `$${shippingFee.toFixed(2)}`}</span>
+        <span style={{ color: '#16a34a' }}>
+          {shippingFee === 0 ? '$0.00' : `$${shippingFee.toFixed(2)}`}
+        </span>
       </div>
+
+      {/* total */}
       <div style={{ ...styles.summaryRow, ...styles.summaryTotal }}>
         <span>Total</span>
         <span>${Number(totalPrice).toFixed(2)}</span>
       </div>
 
+      {/* ===============================
+         แสดงสินค้าใน cart
+      =============================== */}
       {cart && cart.length > 0 && (
+
         <div style={styles.cartItems}>
+
           {cart.map(item => (
+
             <div key={item.Cart_ID} style={styles.cartItem}>
+
+              {/* รูป */}
               <div style={styles.cartItemImg}>
                 {item.Image_URL
                   ? <img src={item.Image_URL} alt={item.Product_Name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }} />
                   : <div style={{ width: '100%', height: '100%', background: '#f0f0f0', borderRadius: 6 }} />
                 }
               </div>
+
+              {/* ข้อมูล */}
               <div style={styles.cartItemInfo}>
                 <p style={styles.cartItemName}>{item.Product_Name}</p>
                 <p style={styles.cartItemMeta}>{item.Category}</p>
                 <p style={styles.cartItemMeta}>{item.Color_Name}</p>
-                <p style={styles.cartItemMeta}>Qty: {item.Quantity} | Size: {item.Size_Name}</p>
-                <p style={styles.cartItemPrice}>${Number(item.Price).toFixed(2)}</p>
+                <p style={styles.cartItemMeta}>
+                  Qty: {item.Quantity} | Size: {item.Size_Name}
+                </p>
+                <p style={styles.cartItemPrice}>
+                  ${Number(item.Price).toFixed(2)}
+                </p>
               </div>
+
             </div>
           ))}
+
         </div>
       )}
     </div>
   )
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
+
+// ===============================
+// Styles (inline CSS)
+// ===============================
 const styles = {
   page:           { maxWidth: 1100, margin: '0 auto', padding: '40px 24px' },
   pageTitle:      { textAlign: 'center', fontSize: 28, fontWeight: 600, marginBottom: 36, color: '#111' },
