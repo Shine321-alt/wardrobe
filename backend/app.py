@@ -9,6 +9,8 @@ from routes.auth import auth_bp
 from routes.cart import cart_bp
 from routes.catalog import catalog_bp  
 from routes.user import user_bp
+from routes.cards import cards_bp
+
 app = Flask(__name__)
 
 FRONTEND_URL = os.environ.get(
@@ -37,6 +39,9 @@ app.register_blueprint(cart_bp, url_prefix="/api")
 app.register_blueprint(catalog_bp, url_prefix="/api")
 # routes user profile
 app.register_blueprint(user_bp, url_prefix='/api')
+app.register_blueprint(cards_bp, url_prefix="/api")
+# routes orders
+
 
 @app.route('/', methods=['GET'])
 def home():

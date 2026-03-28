@@ -18,7 +18,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
 // import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
 
-
 // Placeholder pages
 const ComingSoon = ({ label }) => (
   <div className="coming-soon">

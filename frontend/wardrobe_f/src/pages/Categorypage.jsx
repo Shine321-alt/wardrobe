@@ -6,27 +6,40 @@ import '../styles/Categorypage.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
-// แปลง slug กลับเป็นชื่อจริง เช่น "t-shirts" → "T-Shirts"
+// แปลง slug → ชื่อจริง เช่น "t-shirts" → "T-Shirts"
 const slugToLabel = (slug) =>
     slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 
+// mapping พิเศษสำหรับ slug ที่มีอักขระพิเศษ เช่น &
+const slugMap = {
+    'hoodies-&-sweatshirts': 'Hoodies & Sweatshirts',
+}
+
+// Hero banner รูปตาม type/category
+const heroBannerMap = {
+    'men/hoodies-&-sweatshirts': 'https://res.cloudinary.com/dpxu8zgzv/image/upload/v1774696753/menHoodieshero-banner_zmgohg.png',
+    'men/trousers':              'https://res.cloudinary.com/dpxu8zgzv/image/upload/v1774696754/mentrouserherobanner_qeg1qb.png',
+    'men/shirts':                'https://res.cloudinary.com/dpxu8zgzv/image/upload/v1774696753/MENShirtsherobanner_lbtjut.png',
+    'men/t-shirts':              'https://res.cloudinary.com/dpxu8zgzv/image/upload/v1774696753/MEN_T-shirtsherobanner_lqm3lj.png',
+    'men/new-arrivals':          'https://res.cloudinary.com/dpxu8zgzv/image/upload/v1774696753/MEN-Arivalsherobanne_yqcvn8.png',
+}
+
 export default function CategoryPage() {
     const { type, category } = useParams()
-    // type = "men", category = "new-arrivals" หรือ "t-shirts"
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
 
-    const typeLabel = slugToLabel(type)         // "Men"
-    const categoryLabel = slugToLabel(category) // "New Arrivals" หรือ "T-Shirts"
+    const typeLabel = slugToLabel(type)
+    const categoryLabel = slugMap[category] || slugToLabel(category)
+    const heroBanner = heroBannerMap[`${type}/${category}`] || null
 
-    // เช็คว่า category พิเศษหรือเปล่า
     const isNewArrivals = category === 'new-arrivals'
-    const isBestSellers = category === 'best-sellers'   // ยังไม่ได้ทำ
-    const isLatestDrops = category === 'latest-drops'   // ยังไม่ได้ทำ
-    const isEssentials = category === 'essentials'
-    const isNewSeason = category === 'newseason'
-    const isLimited = category === 'limited'
+    const isBestSellers = category === 'best-sellers'
+    const isLatestDrops = category === 'latest-drops'
+    const isEssentials  = category === 'essentials'
+    const isNewSeason   = category === 'new-season'
+    const isLimited     = category === 'limited'
 
     useEffect(() => {
         setLoading(true)
@@ -36,16 +49,13 @@ export default function CategoryPage() {
         let params = {}
 
         if (isNewArrivals) {
-            // ดึง 12 product ล่าสุดของ type นั้น
             url = `${API_URL}/api/products/new-arrivals`
             params = { type: typeLabel }
         } else if (isBestSellers || isLatestDrops || isEssentials || isNewSeason || isLimited) {
-            // TODO: ยังไม่ได้ทำ → แสดง empty ไปก่อน
             setProducts([])
             setLoading(false)
             return
         } else {
-            // ดึง product ตาม type + category ปกติ
             url = `${API_URL}/api/products/filter`
             params = { type: typeLabel, category: categoryLabel }
         }
@@ -58,35 +68,41 @@ export default function CategoryPage() {
     }, [type, category])
 
     return (
-        <section className="category-section">
-
-            {/* Header */}
-            <div className="category-header">
-                <p className="category-breadcrumb">{typeLabel} / {categoryLabel}</p>
-                <h1 className="category-title">{categoryLabel}</h1>
-                <p className="category-count">{products.length} products</p>
-            </div>
-
-            {/* Loading */}
-            {loading && <div className="category-loading">Loading...</div>}
-
-            {/* Empty */}
-            {!loading && products.length === 0 && (
-                <div className="category-empty">
-                    <p>No products found.</p>
-                    <Link to="/" className="category-shop-btn">BACK TO HOME</Link>
+        <div>
+            {/* Hero Banner — อยู่นอก section เพื่อให้เต็มจอ ไม่ติด max-width */}
+            {heroBanner && (
+                <div className="category-hero">
+                    <img src={heroBanner} alt={categoryLabel} />
                 </div>
             )}
 
-            {/* Grid */}
-            {!loading && products.length > 0 && (
-                <div className="category-grid">
-                    {products.map(product => (
-                        <CategoryCard key={product.Product_ID} product={product} />
-                    ))}
-                </div>
-            )}
+            {/* Content — มี max-width และ padding */}
+            <section className="category-section">
 
-        </section>
+                <div className="category-header">
+                    <p className="category-breadcrumb">{typeLabel} / {categoryLabel}</p>
+                    <h1 className="category-title">{categoryLabel}</h1>
+                    <p className="category-count">{products.length} products</p>
+                </div>
+
+                {loading && <div className="category-loading">Loading...</div>}
+
+                {!loading && products.length === 0 && (
+                    <div className="category-empty">
+                        <p>No products found.</p>
+                        <Link to="/" className="category-shop-btn">BACK TO HOME</Link>
+                    </div>
+                )}
+
+                {!loading && products.length > 0 && (
+                    <div className="category-grid">
+                        {products.map(product => (
+                            <CategoryCard key={product.Product_ID} product={product} />
+                        ))}
+                    </div>
+                )}
+
+            </section>
+        </div>
     )
 }
