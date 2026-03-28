@@ -1,7 +1,7 @@
 // OrderDetailPage.jsx — หน้าแสดงรายละเอียด order
 import { useLocation, useNavigate } from 'react-router-dom'
 import SettingsSidebar from './SettingsSidebar'
-import '../../../styles/SettingsPage.css'
+import '../../styles/SettingsPage.css'
 
 export default function OrderDetailPage() {
     const location = useLocation()
