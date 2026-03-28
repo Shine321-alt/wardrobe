@@ -12,10 +12,10 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import MenPage from './pages/MenPage'
 import WomenPage from './pages/WomenPage'
 import KidPage   from './pages/KidPage'
-import NewPage   from './pages/NewPage'
 import CartPage from './pages/CartPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
+import NewPage from './pages/NewPage'
 // import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
 
 // Placeholder pages

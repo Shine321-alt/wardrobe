@@ -2,9 +2,12 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import HeroBanner from '../components/Home/HeroBanner'  // ← เพิ่ม
 import '../styles/MenPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
+const NEW_BANNER = 'https://res.cloudinary.com/dc8cuih9q/image/upload/v1774713988/Hero-Banner_NEW_s_Page_lplko3.png'  // ← เพิ่ม
 
 const TYPES = [
   { label: 'Men',   type: 'Men' },
@@ -18,7 +21,7 @@ function NewSection({ title, type }) {
 
   useEffect(() => {
     axios.get(`${API_URL}/api/products/new-arrivals`, { params: { type } })
-      .then(res => { setProducts(res.data.slice(0, 4)); setLoading(false) })
+      .then(res => { setProducts(res.data.slice(0, 8)); setLoading(false) })
       .catch(() => setLoading(false))
   }, [type])
 
@@ -53,14 +56,8 @@ function NewSection({ title, type }) {
 export default function NewPage() {
   return (
     <div className="men-page">
-      {/* Hero */}
-      <div className="men-hero">
-        <div className="men-hero-overlay" />
-        <div className="men-hero-text">
-          <p className="men-hero-logo">WARDROBE+</p>
-          <p className="men-hero-sub">NEW ARRIVALS</p>
-        </div>
-      </div>
+      
+      <HeroBanner imageUrl={NEW_BANNER} />  
 
       {TYPES.map(({ label, type }) => (
         <NewSection key={type} title={label} type={type} />
