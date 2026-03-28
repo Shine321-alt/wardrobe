@@ -158,10 +158,7 @@ export default function PaymentPage() {
             </button>
           </section>
 
-          {/* Order Review collapsed */}
-          <section style={styles.sectionCollapsed}>
-            <h3 style={{ ...styles.sectionTitle, color: '#888', fontSize: 15 }}>Order Review</h3>
-          </section>
+          
         </div>
 
         {/* ── RIGHT: Summary ── */}

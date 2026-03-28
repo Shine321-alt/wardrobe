@@ -132,7 +132,7 @@ export default function CheckoutPage() {
 
           {/* Collapsed sections */}
           <CollapsedSection title="Payment" />
-          <CollapsedSection title="Order Review" />
+          
         </div>
 
         {/* ── RIGHT: Order Summary ── */}

@@ -15,7 +15,7 @@ export default function LoginPage() {
 
         {/* Title */}
         <div className="login-header">
-          <h1><span>Sign in</span> to your account</h1>
+          <h1><span>Login</span> to your account</h1>
           <p>Step back into your wardrobe.</p>
         </div>
 
