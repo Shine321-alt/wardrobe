@@ -10,10 +10,13 @@ import CategoryPage from './pages/Categorypage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import MenPage from './pages/MenPage'
+import WomenPage from './pages/WomenPage'
+import KidPage   from './pages/KidPage'
+import NewPage   from './pages/NewPage'
 import CartPage from './pages/CartPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
-import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
+ //import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -33,18 +36,18 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-      {/* Public pages */}
+
+     {/* Public pages */}
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/men" element={<MenPage />} />
-        <Route path="/women" element={<ComingSoon label="Women" />} />
-        <Route path="/kid" element={<ComingSoon label="Kid" />} />
-        <Route path="/new" element={<ComingSoon label="New Arrivals" />} />
-        <Route path="/sale" element={<ComingSoon label="Sale" />} />
-        <Route path="/category/:slug" element={<ComingSoon label="Category" />} />
-        <Route path="/product/:id" element={<Productpage />} />
-        <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/:type/:category" element={<CategoryPage />} />
+        <Route path="/"        element={<HomePage />} />
+        <Route path="/men"     element={<MenPage />} />
+        <Route path="/women"   element={<WomenPage />} />
+        <Route path="/kid"     element={<KidPage />} />
+        <Route path="/new"     element={<NewPage />} />
+        <Route path="/sale"    element={<ComingSoon label="Sale" />} />
+        <Route path="/product/:id"      element={<Productpage />} />
+        <Route path="/wishlist"         element={<WishlistPage />} />
+        <Route path="/:type/:category"  element={<CategoryPage />} />
       </Route>
 
       {/* Protected pages — ต้อง login */}
@@ -52,7 +55,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/cart" element={<CartPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/settings/orders/:id" element={<MyPurchaseDetailPage />} />  
+          {/* <Route path="/settings/orders/:id" element={<MyPurchaseDetailPage />} />   */}
         </Route>
       </Route>
 
