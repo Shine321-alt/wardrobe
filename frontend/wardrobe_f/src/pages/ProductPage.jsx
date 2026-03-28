@@ -73,14 +73,19 @@ export default function ProductPage() {
     // หา Variant_ID ที่ตรง color + size ที่เลือก
     const selectedVariant = selectedColor?.sizes.find(s => s.Size_ID === selectedSizeId)
  
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!user) {
-            navigate('/login')
-            return
+            navigate('/login');
+            return;
         }
-        if (!selectedVariant?.Variant_ID) return
-        addToCart(selectedVariant.Variant_ID, 1)
-    }
+        if (!selectedVariant?.Variant_ID) return;
+        
+        // ใส่ await เพื่อรอให้แอดลง Database เสร็จก่อน
+        await addToCart(selectedVariant.Variant_ID, 1); 
+        
+        // พอบันทึกเสร็จ ก็สั่งให้เปลี่ยนหน้าไปที่ /cart เลย
+        navigate('/cart'); 
+    };
 
     return (
         <div>

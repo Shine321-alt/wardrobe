@@ -10,12 +10,9 @@ export const CartProvider = ({ children }) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [loading, setLoading]       = useState(false);
 
-  // ─────────────────────────────────────────────────────────────────
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
+
   // GET /api/cart
-  // Backend ใช้ httpOnly Cookie → ไม่ต้องส่ง Authorization header
-  // แค่ตั้ง withCredentials: true axios จะส่ง cookie ไปให้เอง
-  // ─────────────────────────────────────────────────────────────────
-  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
   const fetchCart = async () => {
     setLoading(true);
     try {
@@ -23,13 +20,11 @@ export const CartProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      if (res.data.status === 'success') {
-        setCart(res.data.cart);
-        setTotalItems(res.data.total_items);
-        setTotalPrice(res.data.total_price);
-      }
+      setCart(res.data.items);
+      setTotalItems(res.data.total_items);
+      setTotalPrice(res.data.total_price);
+
     } catch (err) {
-      // 401 = ยังไม่ได้ login → clear ตะกร้าเงียบๆ
       if (err.response?.status === 401) {
         setCart([]);
         setTotalItems(0);
@@ -46,7 +41,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (variantId, quantity = 1) => {
     try {
       await axios.post(
-        'http://localhost:5000/api/cart',
+        `${API_URL}/api/cart`,
         { variant_id: variantId, quantity },
         { withCredentials: true }
       );
@@ -56,56 +51,54 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // PATCH /api/cart/<cart_id>
-// CartContext.jsx
-// CartContext.jsx
-    const updateQuantity = async (cartId, quantity) => {
+  // PUT /api/cart/<cart_id>
+  const updateQuantity = async (cartId, quantity) => {
     if (quantity < 1) return;
 
-    // ✅ อัพเดท cart + คำนวณ total ใหม่ทันที
     setCart(prev => {
-        const updated = prev.map(item =>
+      const updated = prev.map(item =>
         item.Cart_ID === cartId ? { ...item, Quantity: quantity } : item
-        );
-        // คำนวณ total ใหม่จาก updated
-        setTotalItems(updated.reduce((sum, item) => sum + item.Quantity, 0));
-        setTotalPrice(updated.reduce((sum, item) => sum + item.Price * item.Quantity, 0));
-        return updated;
+      );
+      setTotalItems(updated.reduce((sum, item) => sum + item.Quantity, 0));
+      setTotalPrice(updated.reduce((sum, item) => sum + item.Price * item.Quantity, 0));
+      return updated;
     });
 
     try {
-        await axios.patch(
-        `http://localhost:5000/api/cart/${cartId}`,
+
+      await axios.put(
+        `${API_URL}/api/cart/${cartId}`,
         { quantity },
         { withCredentials: true }
-        );
+      );
     } catch (err) {
-        console.error('Error updating quantity:', err);
-        fetchCart(); // rollback ถ้า error
+      console.error('Error updating quantity:', err);
+      fetchCart();
     }
-    };
+  };
 
-    const removeFromCart = async (cartId) => {
-    // ✅ ลบ + คำนวณ total ใหม่ทันที
+  const removeFromCart = async (cartId) => {
     setCart(prev => {
-        const updated = prev.filter(item => item.Cart_ID !== cartId);
-        setTotalItems(updated.reduce((sum, item) => sum + item.Quantity, 0));
-        setTotalPrice(updated.reduce((sum, item) => sum + item.Price * item.Quantity, 0));
-        return updated;
+      const updated = prev.filter(item => item.Cart_ID !== cartId);
+      setTotalItems(updated.reduce((sum, item) => sum + item.Quantity, 0));
+      setTotalPrice(updated.reduce((sum, item) => sum + item.Price * item.Quantity, 0));
+      return updated;
     });
 
     try {
-        await axios.delete(`http://localhost:5000/api/cart/${cartId}`, {
+
+      await axios.delete(`${API_URL}/api/cart/${cartId}`, {
         withCredentials: true,
-        });
+      });
     } catch (err) {
-        console.error('Error removing item:', err);
-        fetchCart(); // rollback ถ้า error
+      console.error('Error removing item:', err);
+      fetchCart();
     }
-    };
-    useEffect(() => {
-        fetchCart();
-    }, [user]);
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, [user]);
 
   return (
     <CartContext.Provider

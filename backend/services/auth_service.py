@@ -30,8 +30,8 @@ def authenticate_user(identifier, password):
         if not user:
             return None
 
-        # ⚠️ โหมดทดสอบ: เปรียบเทียบ password แบบ plain text
-        if user["Password"] != password:
+        # ตรวจสอบ password ด้วย bcrypt
+        if not bcrypt.checkpw(password.encode('utf-8'), user["Password"].encode('utf-8')):
             return None
 
         return user
@@ -134,6 +134,9 @@ def reset_user_password(token, password):
             if datetime.utcnow() > record["expiry"]:
                 return False
 
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+
             # ==========================================
             # อัปเดตรหัสผ่านใหม่ในตาราง user
             # ==========================================
@@ -141,7 +144,7 @@ def reset_user_password(token, password):
                 UPDATE user
                 SET Password=%s
                 WHERE User_ID=%s
-            """, (password, record["user_id"]))
+            """, (hashed.decode('utf-8'), record["user_id"]))
 
             # ==========================================
             # ลบ token หลังจากใช้งานเสร็จ

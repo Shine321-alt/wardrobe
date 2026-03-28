@@ -37,10 +37,11 @@ export default function WishlistPage() {
         }).catch(() => {})
     }
 
-    // TODO: เพิ่ม add to cart logic ตรงนี้
+    
     const handleAddToCart = (e, product) => {
         e.preventDefault()
         e.stopPropagation()
+        navigate(`/product/${product.Product_ID}`)
     }
 
     if (loading) return <div className="wishlist-loading">Loading...</div>
