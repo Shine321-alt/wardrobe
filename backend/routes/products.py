@@ -517,5 +517,92 @@ def fetch_user_orders_list():
         conn.close()
 
 
-
-
+@products_bp.route('/orders/details', methods=['GET'])
+def fetch_user_orders_details():
+    user_id = get_user_id_from_request()
+ 
+    if not user_id:
+        return jsonify({"error": "unauthorized"}), 401
+ 
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            sql = """
+                SELECT
+                    -- BuyOrder
+                    bo.BOS_ID,
+                    bo.Status                                       AS buy_status,
+                    bo.CreateAt                                     AS order_date,
+                    DATE_ADD(bo.CreateAt, INTERVAL 3 DAY)          AS estimated_delivery,
+ 
+                    -- Shipping (จาก BuyOrder)
+                    CONCAT(bo.Firstname, ' ', bo.Lastname)          AS shipping_name,
+                    bo.Address_Desc                                 AS shipping_address,
+                    CONCAT(bo.Town, ' ', bo.Postcode)               AS shipping_city,
+                    bo.Country                                      AS shipping_country,
+                    bo.Phonenumber                                  AS shipping_phone,
+ 
+                    -- Payment (mask เหลือแค่ 4 หลักท้าย)
+                    CONCAT('Visa ** ', RIGHT(bo.Cardnumber, 4))     AS payment,
+ 
+                    -- Order
+                    o.Order_ID,
+                    o.Total_Price,
+                    o.Shipping_Fee                                  AS packaging_fee,
+                    o.Status                                        AS order_status,
+                    o.Payment_Slip_URL,
+ 
+                    -- Order Item
+                    oi.Order_Item_ID,
+                    oi.Quantity,
+                    oi.Price_At_Purchase,
+ 
+                    -- Product Variant
+                    pv.Variant_ID,
+                    pv.Price                                        AS variant_price,
+                    pv.Stock,
+ 
+                    -- Product
+                    p.Product_ID,
+                    p.Product_Name,
+                    p.Type                                          AS product_type,
+                    p.Category,
+                    p.Description,
+ 
+                    -- Color
+                    c.Color_ID,
+                    c.Color_Name,
+ 
+                    -- Size
+                    s.Size_ID,
+                    s.Size_Name,
+ 
+                    -- Image (รูปแรกของ variant)
+                    (
+                        SELECT pi.Image_URL
+                        FROM product_images pi
+                        WHERE pi.Variant_ID = pv.Variant_ID
+                        LIMIT 1
+                    )                                               AS Image_URL
+ 
+                FROM BuyOrder bo
+                JOIN orders          o   ON bo.Order_ID   = o.Order_ID
+                JOIN order_items     oi  ON oi.Order_ID   = o.Order_ID
+                JOIN product_variants pv ON oi.Variant_ID = pv.Variant_ID
+                JOIN products        p   ON pv.Product_ID = p.Product_ID
+                JOIN colors          c   ON pv.Color_ID   = c.Color_ID
+                JOIN sizes           s   ON pv.Size_ID    = s.Size_ID
+ 
+                WHERE bo.User_ID = %s
+                ORDER BY bo.CreateAt DESC
+            """
+            cur.execute(sql, (user_id,))
+            results = cur.fetchall()
+ 
+            return jsonify(results), 200
+ 
+    except Exception as e:
+        print(f"❌ API Error: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+    finally:
+        conn.close()
