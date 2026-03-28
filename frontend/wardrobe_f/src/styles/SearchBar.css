@@ -1,0 +1,126 @@
+/* ============================================
+   SearchBar.css
+   ============================================ */
+
+.searchbar-wrapper {
+    position: relative;
+}
+
+/* Input */
+.searchbar-input-wrap {
+    position: relative;
+}
+
+.searchbar-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.searchbar-input {
+    padding: 6px 16px 6px 30px;
+    font-size: 0.75rem;
+    background-color: #f3f4f6;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    outline: none;
+    width: 144px;
+    transition: width 0.3s, border-color 0.2s;
+}
+
+.searchbar-input:focus {
+    width: 220px;
+    border-color: #d1d5db;
+    background-color: #ffffff;
+}
+
+/* Dropdown */
+.searchbar-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 320px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    z-index: 200;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Loading / Empty */
+.searchbar-loading,
+.searchbar-empty {
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* Item */
+.searchbar-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.searchbar-item:last-child {
+    border-bottom: none;
+}
+
+.searchbar-item:hover {
+    background: #f9fafb;
+}
+
+/* รูปสินค้า */
+.searchbar-item-img {
+    width: 48px;
+    height: 48px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.searchbar-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ข้อมูลสินค้า */
+.searchbar-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    justify-content: center;
+}
+
+.searchbar-item-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.searchbar-item-cat {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.searchbar-item-price {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}

@@ -1,0 +1,66 @@
+/* ============================================
+   SearchPage.css
+   ============================================ */
+
+.search-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+/* Header */
+.search-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.search-title {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.search-count {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Loading */
+.search-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+}
+
+/* Empty */
+.search-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30vh;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Grid */
+.search-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .search-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
