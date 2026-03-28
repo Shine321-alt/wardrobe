@@ -19,6 +19,7 @@ import SettingsPage from './pages/SettingsPage'
 import OrderDetailPage from './components/Settings/OrderDetailPage'
 import CheckoutPage from './pages/CheckoutPage'
 import PaymentPage from './pages/PaymentPage'
+import SearchPage from './pages/SearchPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -50,6 +51,7 @@ export default function App() {
         <Route path="/product/:id"      element={<Productpage />} />
         <Route path="/wishlist"         element={<WishlistPage />} />
         <Route path="/:type/:category"  element={<CategoryPage />} />
+        <Route path="/search" element={<SearchPage />} />
       </Route>
 
       {/* Protected pages — ต้อง login */}

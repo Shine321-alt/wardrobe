@@ -12,6 +12,8 @@ from routes.shipping import shipping_bp
 from routes.user import user_bp
 from routes.cards import cards_bp
 from routes.checkout import checkout_bp
+from routes.search import search_bp
+
 from routes.Orders import orders_bp
 
 
@@ -42,6 +44,7 @@ app.register_blueprint(user_bp,      url_prefix='/api')
 app.register_blueprint(cards_bp,     url_prefix='/api')
 app.register_blueprint(shipping_bp,  url_prefix='/api')
 app.register_blueprint(checkout_bp,  url_prefix='/api')
+app.register_blueprint(search_bp, url_prefix="/api")
 app.register_blueprint(orders_bp,      url_prefix="/api")
 
 

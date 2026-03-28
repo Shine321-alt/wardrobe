@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Heart, ShoppingBag, User } from 'lucide-react'
+import { Heart, ShoppingBag, User } from 'lucide-react'
 import MegaMenu from './MegaMenu'
 import UserDropdown from './Userdropdown'
 import { useAuth } from '../../context/AuthContext'
 import '../../styles/Header.css'
+import SearchBar from '../Search/SearchBar'
 
 const navLinks = [
   { label: 'MEN',   to: '/men' },
@@ -55,10 +56,7 @@ export default function Header() {
         <div className="header-actions">
 
           {/* Search bar */}
-          <div className="search-wrapper">
-            <Search size={14} className="search-icon" />
-            <input type="text" placeholder="Search..." className="search-input" />
-          </div>
+          <SearchBar />
 
           {/* Wishlist icon → ถ้า login พาไป /wishlist, ถ้าไม่ login พาไป /login */}
           <Link to={user ? '/wishlist' : '/login'} className="icon-btn">
