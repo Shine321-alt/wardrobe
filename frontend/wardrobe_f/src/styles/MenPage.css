@@ -5,44 +5,53 @@
   flex-direction: column;
 }
 
-.men-subnav {
+/* ── Sub-nav wrapper ── */
+.men-subnav-wrapper {
   width: 100%;
   border-bottom: 1px solid #e5e7eb;
   background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
 }
 
 .men-subnav-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 3.75%;
   display: flex;
   align-items: center;
+  gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  height: 154px;
 }
 
-.men-subnav-inner::-webkit-scrollbar {
-  display: none;
+.men-subnav-inner::-webkit-scrollbar { display: none; }
+
+.men-subnav-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin-right: 3rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .men-subnav-link {
   white-space: nowrap;
-  padding: 0.85rem 1.1rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #374151;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  border: none;
+  border-bottom: 3px solid transparent;
   background: none;
-  border-top: none;
-  border-left: none;
-  border-right: none;
   cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .men-subnav-link:hover,
@@ -51,11 +60,54 @@
   border-bottom-color: #D21312;
 }
 
-.men-section {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 3rem 1rem 0 1rem;
+/* ── Hero Banner ── */
+.men-hero {
+  position: relative;
   width: 100%;
+  height: 666px;
+  background: #1a1a1a url('/men-hero.jpg') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.men-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.men-hero-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.men-hero-logo {
+  font-family: 'Righteous', sans-serif;
+  font-size: clamp(4rem, 10vw, 8rem);
+  letter-spacing: -0.15em;
+  color: #D21312;
+  margin: 0;
+  line-height: 1;
+}
+
+.men-hero-sub {
+  font-family: 'Righteous', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: -0.05em;
+  color: #fff;
+  margin: 0;
+}
+
+/* ── Product section ── */
+.men-section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2.5rem 56px 0 56px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .men-section-header {
@@ -66,44 +118,44 @@
 }
 
 .men-section-title {
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000;
 }
 
 .men-section-viewall {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: #6b7280;
-  border-bottom: 1px solid #6b7280;
-  padding-bottom: 2px;
-  transition: color 0.2s;
-  text-decoration: none;
-}
-
-.men-section-viewall:hover {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #000;
-  border-color: #000;
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
+.men-section-viewall:hover { opacity: 0.5; }
+
+.men-section-viewall:hover { opacity: 0.5; }
+
+/* ── Grid ── */
 .men-product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0;
 }
 
+/* ── Card ── */
 .men-product-card {
-  cursor: pointer;
   display: block;
   text-decoration: none;
+  color: inherit;
+  background: #EEEEEE;
 }
 
 .men-product-card-image {
   background-color: #EEEEEE;
   overflow: hidden;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 287 / 359;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,18 +166,65 @@
   height: 100%;
   object-fit: contain;
   transition: transform 0.5s ease;
+  filter: drop-shadow(0px 4px 20px rgba(0,0,0,0.12));
 }
 
 .men-product-card:hover .men-product-card-image img {
   transform: scale(1.05);
 }
 
-.men-page-spacing {
-  height: 2rem;
+.men-product-card-info {
+  padding: 0.5rem 0.75rem 0.75rem;
+  background: #EEEEEE;
 }
 
-@media (min-width: 1024px) {
-  .men-product-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.men-product-card-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 0.15rem;
+}
+
+.men-product-card-cat {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0 0 0.15rem;
+}
+
+.men-product-card-price {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.men-product-card-skeleton {
+  background: #ddd;
+  aspect-ratio: 3 / 4;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.men-page-spacing { height: 3rem; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .men-product-grid { grid-template-columns: repeat(2, 1fr); }
+  .men-hero { height: 300px; }
+  .men-section { padding: 2rem 1rem 0 1rem; }
+  .men-subnav-inner { height: 80px; }
+}
+
+.men-no-products {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  padding: 1rem 0;
 }

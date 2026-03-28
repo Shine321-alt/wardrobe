@@ -9,14 +9,18 @@ const sharedCategories = {
 }
 
 const clothingByNav = {
-  MEN:   ['T-Shirts', 'Shirts', 'Hoodies', 'Trousers'],
+  MEN:   ['T-Shirts', 'Shirts', 'Hoodies & Sweatshirts', 'Trousers'],
   WOMEN: ['Dresses', 'Blouses', 'Skirts', 'Jackets'],
   KID:   ['T-Shirts', 'Shorts', 'Hoodies', 'Joggers'],
- 
 }
 
+// แปลงชื่อ item เป็น slug สำหรับ URL
+// เช่น "Hoodies & Sweatshirts" → "hoodies-&-sweatshirts"
+const toSlug = (item) =>
+    item.toLowerCase().replace(/ /g, '-')
+
 export default function MegaMenu({ label }) {
-  if (label === 'NEW') return null  
+  if (label === 'NEW') return null
   const columns = {
     'New & Featured': sharedCategories['New & Featured'],
     'Clothing': clothingByNav[label] || [],
@@ -33,7 +37,7 @@ export default function MegaMenu({ label }) {
             {items.map(item => (
               <Link
                 key={item}
-                to={`/${label.toLowerCase()}/${item.toLowerCase().replace(/ /g, '-')}`}
+                to={`/${label.toLowerCase()}/${toSlug(item)}`}
                 className="mega-link"
               >
                 {item}

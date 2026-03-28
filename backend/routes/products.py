@@ -482,3 +482,40 @@ def get_wishlist():
         return jsonify(rows)
     finally:
         conn.close()
+
+# =========================================
+# ORDERS History of user
+# =========================================
+
+@products_bp.route('/orders', methods=['GET'])
+def fetch_user_orders_list():
+    user_id = get_user_id_from_request()
+    if not user_id:
+        return jsonify({"error": "unauthorized"}), 401
+    
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            # แก้ไข: เพิ่ม %s และกรองสถานะ Cart ออก (ถ้าต้องการ)
+            sql = """
+                SELECT 
+                    Order_ID as id, 
+                    Created_At as date, 
+                    Status as status
+                FROM orders 
+                WHERE User_ID = %s AND Status != 'Cart'
+                ORDER BY Created_At DESC
+            """
+            cur.execute(sql, (user_id,)) # ส่ง user_id เข้าไปตรงนี้
+            results = cur.fetchall()
+
+            return jsonify(results), 200
+    except Exception as e:
+        print(f"❌ API Error: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+
+
+
