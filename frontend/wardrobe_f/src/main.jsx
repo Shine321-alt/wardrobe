@@ -8,9 +8,9 @@ import { CartProvider } from './context/CartContext'   // ← เพิ่ม
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <CartProvider>         {/* ← เพิ่ม */}
+      <CartProvider>         
         <App />
-      </CartProvider>        {/* ← เพิ่ม */}
+      </CartProvider>        
     </AuthProvider>
   </StrictMode>,
 )

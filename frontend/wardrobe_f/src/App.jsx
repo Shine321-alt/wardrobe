@@ -13,7 +13,7 @@ import MenPage from './pages/MenPage'
 import CartPage from './pages/CartPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SettingsPage from './pages/SettingsPage'
-import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
+// import MyPurchaseDetailPage from './pages/MyPurchaseDetailPage'
 
 // Placeholder pages
 const ComingSoon = ({ label }) => (
@@ -52,7 +52,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/cart" element={<CartPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/settings/orders/:id" element={<MyPurchaseDetailPage />} />  
+          {/* <Route path="/settings/orders/:id" element={<MyPurchaseDetailPage />} />   */}
         </Route>
       </Route>
 
