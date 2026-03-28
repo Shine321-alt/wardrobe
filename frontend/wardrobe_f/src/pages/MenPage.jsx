@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import '../styles/MenPage.css'
+import HeroBanner from '../components/Home/HeroBanner'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
@@ -14,14 +15,24 @@ const SUB_CATEGORIES = [
 ]
 
 const SECTIONS = [
-  { id: 'new-arrivals',        title: 'New Arrivals',          category: 'new-arrivals' },
-  { id: 'shirts',              title: 'Shirts',                category: 'shirts' },
-  { id: 't-shirts',            title: 'T-Shirts',              category: 't-shirts' },
-  { id: 'trousers',            title: 'Trousers',              category: 'trousers' },
-  { id: 'hoodies-sweatshirts', title: 'Hoodies & Sweatshirts', category: 'hoodies-sweatshirts' },
+  { id: 'new-arrivals',        title: 'New Arrivals',          category: 'new-arrivals',        showInfo: false },
+  { id: 'shirts',              title: 'Shirts',                category: 'shirts',              showInfo: true  },
+  { id: 't-shirts',            title: 'T-Shirts',              category: 't-shirts',            showInfo: true  },
+  { id: 'trousers',            title: 'Trousers',              category: 'trousers',            showInfo: true  },
+  { id: 'hoodies-sweatshirts', title: 'Hoodies & Sweatshirts', category: 'hoodies-sweatshirts', showInfo: true  },
 ]
 
-function ProductSection({ title, sectionId, category }) {
+const slugToCategory = (slug) => {
+  const map = {
+    'shirts': 'Shirts',
+    't-shirts': 'T-Shirts',
+    'trousers': 'Trousers',
+    'hoodies-sweatshirts': 'Hoodies & Sweatshirts',
+  }
+  return map[slug] || slug
+}
+
+function ProductSection({ title, sectionId, category, showInfo }) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -32,7 +43,7 @@ function ProductSection({ title, sectionId, category }) {
       : `${API_URL}/api/products/filter`
     const params = isNewArrivals
       ? { type: 'Men' }
-      : { type: 'Men', category: category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') }
+      : { type: 'Men', category: slugToCategory(category) }
 
     axios.get(url, { params })
       .then(res => { setProducts(res.data.slice(0, 4)); setLoading(false) })
@@ -50,7 +61,7 @@ function ProductSection({ title, sectionId, category }) {
         <p className="men-no-products">No products found.</p>
       )}
 
-      <div className="men-product-grid">
+      <div className={`men-product-grid ${!showInfo ? 'men-product-grid--no-gap' : ''}`}>
         {loading
           ? [...Array(4)].map((_, i) => (
               <div key={i} className="men-product-card-skeleton" />
@@ -64,11 +75,13 @@ function ProductSection({ title, sectionId, category }) {
                 <div className="men-product-card-image">
                   <img src={product.Image_URL} alt={product.Product_Name} />
                 </div>
-                <div className="men-product-card-info">
-                  <p className="men-product-card-name">{product.Product_Name}</p>
-                  <p className="men-product-card-cat">{product.Category}</p>
-                  <p className="men-product-card-price">${product.Price}</p>
-                </div>
+                {showInfo && (
+                  <div className="men-product-card-info">
+                    <p className="men-product-card-name">{product.Product_Name}</p>
+                    <p className="men-product-card-cat">{product.Category}</p>
+                    <p className="men-product-card-price">${product.Price}</p>
+                  </div>
+                )}
               </Link>
             ))
         }
@@ -97,22 +110,17 @@ export default function MenPage() {
         </div>
       </div>
 
-      {/* ── Hero Banner (static) ── */}
-      <div className="men-hero">
-        <div className="men-hero-overlay" />
-        <div className="men-hero-text">
-          <p className="men-hero-logo">WARDROBE+</p>
-          <p className="men-hero-sub">MEN'S COLLECTIONS</p>
-        </div>
-      </div>
+      {/* ── Hero Banner ── */}
+      <HeroBanner imageUrl="https://res.cloudinary.com/dc8cuih9q/image/upload/v1774720327/Group_7_pvrbp5.png" />
 
       {/* ── Sections ── */}
-      {SECTIONS.map(({ id, title, category }) => (
+      {SECTIONS.map(({ id, title, category, showInfo }) => (
         <ProductSection
           key={id}
           sectionId={id}
           title={title}
           category={category}
+          showInfo={showInfo}
         />
       ))}
 
