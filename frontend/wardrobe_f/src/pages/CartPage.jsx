@@ -25,6 +25,9 @@ const MinusIcon = () => (
 
 // ── CartItem Component ─────────────────────────────────────────────────────────
 const CartItem = ({ item, onRemove, onUpdateQty }) => {
+  const stock = item.Stock ?? Infinity;
+  const atMax = item.Quantity >= stock;
+
   return (
     <div className="cart-item">
       <div className="cart-item__image">
@@ -70,11 +73,19 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
             <button
               className="cart-item__btn"
               onClick={() => onUpdateQty(item.Cart_ID, item.Quantity + 1)}
-              title="Increase quantity"
+              disabled={atMax}
+              title={atMax ? `Maximum stock: ${stock}` : 'Increase quantity'}
             >
               <PlusIcon />
             </button>
           </div>
+
+          {/* แสดง warning เมื่อถึง stock สูงสุด */}
+          {atMax && (
+            <span className="cart-item__stock-warning">
+              Max {stock} available
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -138,7 +149,6 @@ const CartPage = () => {
             <span>${Number(totalPrice).toFixed(2)}</span>
           </div>
 
-          {/* ── CheckOut button → ไปหน้า Checkout ── */}
           <button
             className="cart-checkout-btn"
             disabled={!cart || cart.length === 0}
